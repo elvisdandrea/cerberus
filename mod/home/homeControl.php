@@ -9,6 +9,6 @@
 class homeControl extends Control {
 
     public function itStarts() {
-        
+
     }
 }

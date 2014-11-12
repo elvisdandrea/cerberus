@@ -49,7 +49,7 @@ class core {
      * @return bool
      */
     public static function isAjax() {
-        return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ? true : false;
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
 
     /**
@@ -63,8 +63,8 @@ class core {
      */
     public function execute() {
         $uri = $this->loadUrl();
-        define('CALL', $uri[0]);
         if (count($uri)>1) {
+            define('CALL', $uri[0]);
             $module = $uri[0].'Control';
             $action = $uri[1];
             if (method_exists($module,$action)){
@@ -76,6 +76,7 @@ class core {
         }
 
         if (!$this->isAjax()) {
+            define('CALL', 'home');
             $home = new homeControl();
             $home->itStarts();
         }

@@ -47,6 +47,7 @@ function autoLoad($class_name) {
         MODDIR,
         LIBDIR
     );
+
     foreach ($search as $dir) {
         $file = $dir . '/' . CALL . '/' . $class_name . '.php';
         if (file_exists($file)) {
