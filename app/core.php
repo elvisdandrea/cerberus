@@ -20,6 +20,12 @@ class core {
         $url = $_SERVER['REQUEST_URI'];
         $uri = str_replace(BASEDIR,'', $url);
         $uri = explode('/', $uri);
+
+        array_walk($uri, function(&$item){
+            strpos($item, '?') == false ||
+            $item = substr($item, 0, strpos($item, '?'));
+        });
+
         return $uri;
 
     }
