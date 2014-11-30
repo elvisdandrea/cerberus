@@ -4,14 +4,25 @@
 /**
  * Class CR_
  *
- * Classe de criptografia
- * Desculpe, sem muita documentação sobre a classe
+ * Sorry, not many docs from here
  *
- * Utilize CR_::get($string) para criptografar e descriptografar
- * ou CR_::encrypt($string), CR_::decrypt($string)
+ * The encryption hash is generated dynamically,
+ * so only this class can decrypt what's encrypted from here
+ *
+ * Just use CR_::get($string) to Encrypt or Decrypt anything
+ * or CR_::encrypt($string), CR_::decrypt($string)
  */
 class CR_ {
 
+    /**
+     * If encrypted, decrypts
+     * If plain text, encrypts
+     *
+     * Simple as that
+     *
+     * @param   string      $str    - The original string
+     * @return  string              - the encrypted/decrypted string
+     */
     public static function get($str)
     {
 
@@ -24,6 +35,12 @@ class CR_ {
         }
     }
 
+    /**
+     * Encrypts a text
+     *
+     * @param   string      $str        - Some plain text
+     * @return  string                  - The encrypted text
+     */
     public static function encrypt($str)
     {
         $pass = uniqid();
@@ -46,6 +63,12 @@ class CR_ {
         }
     }
 
+    /**
+     * Decrypts a text
+     *
+     * @param   string      $str        - The encrypted text
+     * @return  string                  - The decrypted text
+     */
     public static function decrypt($str)
     {
         $str = substr($str, 1);

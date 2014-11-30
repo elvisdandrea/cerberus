@@ -68,8 +68,10 @@ class core {
      * there's no place like home
      */
     public function execute() {
+
         $uri = $this->loadUrl();
-        if (count($uri)>1) {
+        String::arrayTrimNumericIndexed($uri);
+        if (count($uri)>1 && $uri[0] != '' && $uri[1] != '') {
             define('CALL', $uri[0]);
             $module = $uri[0].'Control';
             $action = $uri[1];

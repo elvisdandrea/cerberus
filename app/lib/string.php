@@ -1,7 +1,9 @@
 <?php
 
-/*
- * leet.eti.br STRING LIBRARY
+/**
+ * Class String
+ *
+ * A library to manipulate and convert string values
  *
  * Author: Elvis D'Andrea
  * E-mail: elvis@vistasoft.com.br
@@ -10,67 +12,68 @@
 
 class String {
 
+    /**
+     * Preventing string from having string injections
+     *
+     * @param   string      $string     - The original string
+     * @return  string                  - The escaped string
+     */
     public static function ClearString( $string ) {
 
-        $string = preg_replace( '/<[^>]*>/', ' ', $string );
-        $string = stripslashes( $string );
-        $string = htmlspecialchars( $string, ENT_QUOTES );
-        $string = str_replace( '"', '&quot;', $string );
-        $string = str_replace( "'", "&#039;", $string );
-
+        #$string = mysql_real_escape_string($string);
+        $string = addslashes($string);
         return $string;
     }
 
-    /*
-    public static function ClearArray( &$array ) {
-        foreach ( $array as $value ) {
+
+    /**
+     * Cleans an entire array recursively
+     * from having string injection
+     *
+     * @param   array       $array      - The original array
+     * @return  array                   - The escaped array
+     */
+    public static function ClearArray( $array ) {
+        foreach ( $array as $key => $value ) {
             if ( is_array( $value ) ) {
-                $array[$value] = self::ClearArray( $value );
+                $array[$key] = self::ClearArray( $value );
             } else {
                 $array[$value] = self::ClearString( $value );
             }
         }
-    }
-*/
-    public static function ClearObject( &$object ) {
-        foreach ( $object as $value ) {
-            if ( is_object( $value ) ) {
-                $object->$value = self::ClearObject( $value );
-            } else {
-                $object->$value = self::ClearString( $value );
-            }
-        }
+        return $array;
     }
 
-    public static function StrToArrayValues( $str, $separator = ';', $quoted = false) {
-
-        $array_result = array();
-        $base = explode( $separator, $str );
-        $quote = '';
-        if ($quoted) {
-            $quote = '"';
-        }
-        foreach ( $base as $item ) {
-            if ( trim( $item ) != '' ) {
-                $ar = explode( '=', $item );
-                if ( count( $ar ) == 2 ) {
-                    $array_result[trim( $ar[0] )] = trim( $quote . $ar[1] . $quote );
-                } else {
-                    $array_result[trim( $ar[0] )] = '';
-                }
-            }
-        }
-        return $array_result;
-    }
-
+    /**
+     * Remove new line characters from a string
+     *
+     * @param   string      $string     - The original string
+     * @return  string                  - The string without new lines
+     */
     public static function RemoveNewLines( $string ) {
         return preg_replace( '/\s+/', ' ', trim( $string ) );
     }
 
+    /**
+     * An "addslashes" for single quotes only
+     *
+     * @param   string      $string     - The original string
+     * @return  string
+     */
     public static function AddSQSlashes( $string ) {
         return str_replace( '\'', '\\\'', $string );
     }
 
+    /**
+     * A non-validation version to format string dates
+     * from dd/mm/yyyy to yyyy-mm-dd
+     *
+     * The purpose is to do it fast, so it's not secure
+     * if the incoming string isn't correct
+     *
+     * @param   string      $date       - The original string date in dd/mm/yyyy format
+     * @return  string                  - The string formatted to yyyy-mm-dd
+     */
     public static function formatDateToSave($date) {
         if (strpos($date, '/') !== false) {
             $date = explode('/', $date);
@@ -79,12 +82,33 @@ class String {
         return '0000-00-00';
     }
 
+    /**
+     * A non-validation version to format string dates
+     * from dd/mm/yyyy hh:mm:ss to yyyy-mm-dd hh:mm:ss
+     *
+     * The purpose is to do it fast, so it's not secure
+     * if the incoming string isn't correct
+     *
+     * @param   string      $date       - The original string date in dd/mm/yyyy format
+     * @param   string      $time       - The original time in hh:mm:ss
+     * @return  string                  - The string formatted to yyyy-mm-dd hh:mm:ss
+     */
     public static function formatDateTimeToSave($date, $time) {
         $date = self::formatDateToSave($date);
         if (strpos($time, ':') === false) $time = '00:00:00';
         return $date . ' ' . $time;
     }
 
+    /**
+     * A non-validation version to format string dates
+     * from yyyy-mm-dd to dd/mm/yyyy
+     *
+     * The purpose is to do it fast, so it's not secure
+     * if the incoming string isn't correct
+     *
+     * @param   string      $date       - The original string date in yyyy-mm-dd format
+     * @return  string                  - The string formatted to dd/mm/yyyy
+     */
     public static function formatDateToLoad($date) {
         if (strpos($date, '-') !== false) {
             $date = explode('-', $date);
@@ -93,6 +117,17 @@ class String {
         return '00/00/0000';
     }
 
+    /**
+     * A non-validation version to format string dates
+     * from yyyy-mm-dd hh:mm:ss to dd/mm/yyyy hh:mm:ss
+     *
+     * The purpose is to do it fast, so it's not secure
+     * if the incoming string isn't correct
+     *
+     * @param   string      $datetime       - The original string date in yyyy-mm-ddd hh:mm:ss format
+     * @param   string      $separator      - Character to separate the date from time (optional)
+     * @return  string                      - The string formatted to dd/mm/yyyy hh:mm:ss
+     */
     public static function formatDateTimeToLoad($datetime, $separator = '') {
         $date = explode(' ',$datetime);
         if (count($date) > 1) {
@@ -102,6 +137,24 @@ class String {
             return $fdate . ' ' . $separator. ' ' . $ftime;
         }
         return '00/00/0000 '.$separator.' 00:00';
+    }
+
+    /**
+     * Removes empty values for arrays
+     * with numeric indexes
+     *
+     * The indexes that contain values will
+     * be moved upwards, so numeric indexes
+     * will remain in sequence
+     *
+     * @param   array       $array      - The original array
+     */
+    public static function arrayTrimNumericIndexed(&$array) {
+
+        $result = array();
+
+        foreach ($array as $value) $value == '' || $result[] = $value;
+        $array = $result;
     }
 
 }
