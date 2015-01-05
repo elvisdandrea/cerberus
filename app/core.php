@@ -18,6 +18,7 @@ class core {
     private function loadUrl(){
 
         $url = $_SERVER['REQUEST_URI'];
+
         $uri = str_replace(BASEDIR,'', $url);
         $uri = explode('/', $uri);
 
@@ -71,6 +72,18 @@ class core {
 
         $uri = $this->loadUrl();
         String::arrayTrimNumericIndexed($uri);
+
+        if (!$this->isAjax()) {
+
+            require_once MODDIR . '/home/homeView.php';
+            require_once MODDIR . '/home/homeModel.php';
+            require_once MODDIR . '/home/homeControl.php';
+
+            $home = new homeControl();
+            $home->itStarts($uri);
+            exit;
+        }
+
         if (count($uri)>1 && $uri[0] != '' && $uri[1] != '') {
             define('CALL', $uri[0]);
             $module = $uri[0].'Control';
@@ -81,12 +94,6 @@ class core {
                 echo $result;
                 exit;
             }
-        }
-
-        if (!$this->isAjax()) {
-            define('CALL', 'home');
-            $home = new homeControl();
-            $home->itStarts();
         }
 
         exit;

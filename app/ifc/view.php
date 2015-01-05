@@ -143,4 +143,15 @@ class View {
         return $this->smarty->fetch($this->template);
     }
 
+    /**
+     * Renders a 404 page
+     *
+     * @return string
+     */
+    public function get404() {
+
+        $this->template = '404.tpl';
+        return $this->render();
+    }
+
 }

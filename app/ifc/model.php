@@ -180,6 +180,56 @@ class Model {
     public $dataset = array();
 
     /**
+     * The Result of a
+     * query can be displayed in a grid
+     *
+     * Therefore, we need a template file for it
+     *
+     * @var string
+     */
+    private $dbGridTemplate = 'dbGrid';
+
+    /**
+     * We always need a custom grid, where
+     * the titles are human readable and
+     * we don't want to show all columns
+     *
+     * So, we can create a list of the columns
+     * we're using in the grid and make a title
+     * for them
+     *
+     * @var array
+     */
+    private $dbGridColumns = array();
+
+    /**
+     * Sometimes we don't need the
+     * table titles, so we may want
+     * to deactivate it
+     *
+     * @var bool
+     */
+    private $dbGridShowHeader = true;
+
+
+    /**
+     * Sometimes we want to add all
+     * columns in the Grid, so we don't
+     * want to add column by column
+     *
+     * @var bool
+     */
+    private $dbGridAutoHeader = false;
+
+    /**
+     * When rendering a table, we may need
+     * to set an onclick event for the rows
+     *
+     * @var array
+     */
+    private $gridRowLink = array('action' => '', 'fieldId' => '');
+
+    /**
      * The Current Connection Resource Name
      *
      * @var string
@@ -198,12 +248,106 @@ class Model {
 
 
     public function __construct($connection = 'connection1') {
+
+        //$this->generateConnectionFile();      //For first time, create the database connection file
+        $this->id = uniqid();
         $this->loadConnectionFile($connection);
         $this->setConnection($connection);
     }
 
+    /**
+     * Sets current connection
+     *
+     * @param   string      $name       - The connection name
+     */
     public function setConnection($name) {
         $this->connection = $name;
+    }
+
+    /**
+     * Sets the template file to render
+     * a grid with the dataset content
+     *
+     * @param   string      $name       - The template name
+     */
+    public function setDbGridTemplate($name) {
+        $this->dbGridTemplate = $name;
+    }
+
+    /**
+     * Adds a column in dbGrid columns list
+     *
+     * @param   string      $title      - The column title
+     * @param   string      $field      - The column field name
+     * @param   string      $type       - Text|Date|Input|Checkbox|Select|Image
+     * @param   bool|string $subtitle   - A subtitle field: a text to be show under the line content
+     */
+    public function addGridColumn($title, $field, $type = 'Text', $subtitle = false) {
+        $this->dbGridColumns[$field] = array(
+            'field'     => $field,
+            'title'     => $title,
+            'type'      => $type,
+            'subtitle'  => $subtitle
+        );
+    }
+
+    /**
+     * Whenever we need to set an entire set
+     * of columns at once, here's a method
+     *
+     * @param   array       $columnList     - An array containing all columns with title => field structure
+     */
+    public function addGridColumns(array $columnList) {
+        $this->dbGridColumns = array_merge($this->dbGridColumns, $columnList);
+    }
+
+    /**
+     * Deactivates the Table headers
+     * when rendering a DbGrid
+     *
+     * @param   bool        $show           - True|False
+     */
+    public function showDbGridTitles($show) {
+        $this->dbGridShowHeader = $show;
+    }
+
+    /**
+     * Sets the Auto Header
+     *
+     * Set to True if you need to show
+     * all columns in the grid
+     *
+     * @param   bool        $header         - True|False
+     */
+    public function setDbGridAutoHeader($header) {
+        $this->dbGridAutoHeader = $header;
+    }
+
+    /**
+     * Removes a dbGrid Column
+     *
+     * @param   string      $title      - The column title to be removed
+     */
+    public function removeGridColumn($title) {
+        if (isset($this->dbGridColumns[$title])) unset($this->dbGridColumns[$title]);
+    }
+
+    /**
+     * Adds a destination link for
+     * rows in a DBGrid Table
+     *
+     * The link will be set as described below:
+     *
+     * Value set as action:     destination
+     * Value set as fieldId:    id
+     * Result URL:              http://siteurl/destination/{row['fieldId']}
+     *
+     * @param   string      $action
+     * @param   string      $fieldId
+     */
+    public function setGridRowLink($action, $fieldId) {
+        $this->gridRowLink['action'] = $action;
+        $this->gridRowLink['fieldId'] = $fieldId;
     }
 
     /**
@@ -213,6 +357,15 @@ class Model {
      */
     protected function setId($id) {
         $this->id = $id;
+    }
+
+    /**
+     * Returns the Model ID
+     *
+     * @return string
+     */
+    protected function getId() {
+        return $this->id;
     }
 
     /**
@@ -257,6 +410,28 @@ class Model {
     }
 
     /**
+     * Whenever you need to create a connection file,
+     * Just insert data and call this function
+     * in any method you want
+     */
+    public function generateConnectionFile() {
+
+        $data = array(
+            'host' => '',
+            'user' => '',
+            'pass' => '',
+            'db'   => ''
+        );
+
+        $name = '';
+
+        $data = json_encode($data);
+        $data = CR_::encrypt($data);
+
+        file_put_contents(MODELDIR . '/' . md5($name), $data);
+    }
+
+    /**
      * Creates a new connection from
      * encrypted string in the
      * Connection Resource List
@@ -267,6 +442,7 @@ class Model {
     public function createNewConnection($name, $data) {
         $data = CR_::decrypt($data);
         $json = json_decode($data, true);
+
         if ($json) {
             $this->connections[$name] = $json;
         }
@@ -278,11 +454,12 @@ class Model {
      * @param $name     - The Connection Name
      */
     private function connect($name) {
+
         $this->connections[$name]['conn'] =
             new PDO(
-                'mysql:host=' . $this->connections['host'] . ';dbname=' . $this->connections['db'],
-                $this->connections['user'],
-                $this->connections['pass']);
+                'mysql:host=' . $this->connections[$name]['host'] . ';dbname=' . $this->connections[$name]['db'],
+                $this->connections[$name]['user'],
+                $this->connections[$name]['pass']);
     }
 
     /**
@@ -306,9 +483,10 @@ class Model {
     /**
      * Executes a Query
      *
-     * @param   $query                - Query string
-     * @param   bool $setUtf8         - Executes SET NAMES 'utf-8' before running a query (recommended for insert/update)
+     * @param   string  $query          - Query string
+     * @param   bool    $setUtf8        - Executes SET NAMES 'utf-8' before running a query (recommended for insert/update)
      * @return  array
+     * @throws  Exception               - Only when on Dev Enviroment
      */
     private function Exec($query, $setUtf8 = false) {
         $this->connect($this->connection);
@@ -316,12 +494,13 @@ class Model {
         $result = $this->connections[$this->connection]['conn']->prepare($query);
         $result->execute();
         $info = $result->errorInfo();
-        #if ($info[2] != '') {
-        #    ExceptionHandler::sqlFatalErrorHandler($query, $info[2]);
-        #}
-        if (is_bool($result)) {
-            return $result;
+
+        $this->result = $info[2] == '';
+
+        if (!$this->result && ENVDEV == 1) {
+            throw new Exception($query . '<br>' . $info[2]);
         }
+
         $dataset = $this->Mount($result);
         if ($setUtf8) $this->connections[$this->connection]['conn']->prepare("SET NAMES 'latin1'")->execute();
         return $dataset;
@@ -344,7 +523,7 @@ class Model {
      * @param   bool    $safe       - Safe Delete: will not run if there's no WHERE clause
      */
     protected function runDelete($safe = true) {
-        $this->result = $this->Exec($this->getDeleteQuery($safe));
+        $this->dataset = $this->Exec($this->getDeleteQuery($safe));
     }
 
     /**
@@ -354,7 +533,7 @@ class Model {
      * @param   bool    $safe       - Safe Insert: will not run if there's no WHERE clause
      */
     protected function runInsert($safe = true) {
-        $this->result = $this->Exec($this->GetInsert($safe));
+        $this->dataset = $this->Exec($this->GetInsert($safe));
     }
 
     /**
@@ -364,7 +543,7 @@ class Model {
      * @param   bool    $safe       - Safe Update: will not run if there's no WHERE clause
      */
     protected function runUpdate($safe = true) {
-        $this->result = $this->Exec($this->getUpdateQuery($safe), true);
+        $this->dataset = $this->Exec($this->getUpdateQuery($safe), true);
     }
 
     /**
@@ -685,6 +864,34 @@ class Model {
      */
     public function getResult() {
         return $this->result;
+    }
+
+
+    /**
+     * Display the Dataset in a grid
+     */
+    public function dbGrid() {
+
+        $view = new View();
+
+        $view->setVariable('id', $this->id);
+        $view->setVariable('showTitles', $this->dbGridShowHeader);
+        $view->setVariable('rowAction', $this->gridRowLink['action']);
+        $view->setVariable('rowFieldId', $this->gridRowLink['fieldId']);
+
+        if ($this->dbGridAutoHeader) {
+            $this->dbGridColumns = array();
+            foreach ($this->getRow(0) as $field => $value) {
+                $this->addGridColumn(ucwords(String::decamelize($field)), $field);
+            }
+        }
+
+        $view->setVariable('head', $this->dbGridColumns);
+        $view->setVariable('content', $this->dataset);
+        $view->loadTemplate($this->dbGridTemplate);
+
+        return $view->render();
+
     }
 
 

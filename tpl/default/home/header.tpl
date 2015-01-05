@@ -9,7 +9,7 @@ Gera o Header, menu de cabeçalho
 
 <!-- -------Botão Brand, à esquerda-------- -->
    <div class="navbar-header">
-     <a class="navbar-brand" href="#">Raptor Reporter</a>
+     <a class="navbar-brand" href="#">Cerberus Core</a>
    </div>
 
 <!-- -----------Menu à direita------------- -->

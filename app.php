@@ -10,8 +10,11 @@
 /**
  * Directory Definition
  */
-define('MAINURL',   $_SERVER['SERVER_NAME'] . dirname($_SERVER["PHP_SELF"]));
-define('BASEDIR',     dirname($_SERVER['PHP_SELF']) . '/');
+define('MAINURL',   ( strpos($_SERVER['SERVER_NAME'], 'http://') !== false ? $_SERVER['SERVER_NAME'] :
+        'http://' . $_SERVER['SERVER_NAME'] ) . dirname($_SERVER["PHP_SELF"]));
+
+define('BASEDIR',     (dirname($_SERVER['PHP_SELF']) != '/' ? dirname($_SERVER['PHP_SELF']) . '/' : '/'));
+
 define('MAINDIR',   __DIR__);
 define('APPDIR',    MAINDIR .   '/app');
 define('IFCDIR',    APPDIR  .   '/ifc');
@@ -23,9 +26,14 @@ define('CSSURL',    MAINURL . '/res/css');
 define('JSURL',     MAINURL . '/res/js');
 
 /**
+ * Site Language
+ */
+define('LNG', 'pt');
+
+/**
  * Development Enviroment
  */
-define('ENVDEV', '1');
+define('ENVDEV', '0');
 
 /**
  * Register Handler Functions

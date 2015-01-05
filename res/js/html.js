@@ -1,5 +1,5 @@
 /* 
- * leet.eti.br HTML PROCESSOR
+ * HTML PROCESSOR
  * 
  * Author: Elvis D'Andrea
  * E-mail: elvis@vistasoft.com.br

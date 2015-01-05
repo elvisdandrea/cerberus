@@ -157,6 +157,30 @@ class String {
         $array = $result;
     }
 
+    /**
+     * Converts CameCase text to Uppercase-First-Letter words
+     *
+     * @param   string      $word           - The CamelCased Text
+     * @return  string                      - The Uppercase-First-Letter text
+     */
+    public static function decamelize($word) {
+        return preg_replace(
+            '/(^|[a-z])([A-Z])/e',
+            'strlen("\\1") ? "\\1 \\2" : "\\2"',
+            $word
+        );
+    }
+
+    /**
+     * Converts underline_separated_text to CamelCase Text
+     *
+     * @param   string      $word           - The underlined_separated_text
+     * @return  string                      - The CamelCased text
+     */
+    public static function camelize($word) {
+        return preg_replace('/(^|_)([a-z])/e', 'strtoupper("\\2")', $word);
+    }
+
 }
 
 ?>
