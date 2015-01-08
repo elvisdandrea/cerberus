@@ -36,6 +36,12 @@ define('LNG', 'pt');
 define('ENVDEV', '0');
 
 /**
+ * If attends to ReSTful requests
+ */
+define('RESTFUL', '0');
+
+
+/**
  * Register Handler Functions
  */
 require_once MAINDIR . '/handler.php';

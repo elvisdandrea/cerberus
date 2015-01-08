@@ -12,6 +12,10 @@
  * @email:  elvis.vista@gmail.com
  */
 
+/**
+ * Error Message Level
+ */
+error_reporting(E_ERROR | E_PARSE);
 
 /**
  * Handler functions registration

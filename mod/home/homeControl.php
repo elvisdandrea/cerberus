@@ -59,7 +59,7 @@ class homeControl extends Control {
      * When returning the home page, loads the inner content only
      */
     public function index() {
-        #$this->view->loadTemplate( 'elements_example');
+        #$this->view->loadTemplate( 'elements_example');        //load this template to see the theme elements
         $this->view->loadTemplate( LNG . '/centercontent');
         $this->commitReplace($this->view->render(), '#two');
     }
