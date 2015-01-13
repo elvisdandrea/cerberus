@@ -40,6 +40,11 @@ define('ENVDEV', '0');
  */
 define('RESTFUL', '0');
 
+/**
+ * If ReSTful, which format we're working
+ */
+define('RESTFORMAT', 'json');
+
 
 /**
  * Register Handler Functions

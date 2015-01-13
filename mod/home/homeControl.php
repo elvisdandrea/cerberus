@@ -36,6 +36,7 @@ class homeControl extends Control {
 
         $this->view->loadTemplate('index');
 
+        //TODO: make a core call for url/module load
         if (count($uri)>1 && $uri[0] != '' && $uri[1] != '') {
             define('CALL', $uri[0]);
             $module = $uri[0].'Control';
