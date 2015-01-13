@@ -103,6 +103,7 @@ class core {
      */
     public static function throwError($message) {
 
+        //TODO: handle other formats
         http_response_code(400);
         header('Content-type: application/json');
 
@@ -123,6 +124,7 @@ class core {
      */
     public static function response(array $data) {
 
+        //TODO: handle other formats
         http_response_code(200);
         header('Content-type: application/json');
 
@@ -140,6 +142,9 @@ class core {
      * there's no place like home
      */
     public function execute() {
+
+        if (RESTFUL == '1')
+            self::authenticate();
 
         $uri = $this->loadUrl();
         String::arrayTrimNumericIndexed($uri);
