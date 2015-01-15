@@ -1,23 +1,14 @@
-	
+<?php
+/**
+* Geolocation
+*
+* Get latitude/longitude or address using Google Maps API
+*
+* @author Jeroen Desloovere <info@jeroendesloovere.be>
+*/
 
-    <?php
-    /**
-     * Created by PhpStorm.
-     * User: hullen
-     * Date: 15/10/14
-     * Time: 01:06
-     */
-     
-    namespace JeroenDesloovere\Geolocation;
-     
-    /**
-     * Geolocation
-     *
-     * Get latitude/longitude or address using Google Maps API
-     *
-     * @author Jeroen Desloovere <info@jeroendesloovere.be>
-     */
-    class Geolocation
+//TODO: Refractor this class... no no, make a new one from scratch
+class Geolocation
     {
         // API URL
         const API_URL = 'http://maps.googleapis.com/maps/api/geocode/json';
@@ -25,8 +16,9 @@
         /**
          * Do call
          *
-         * @return object
          * @param  array  $parameters
+         * @return object
+         * @throws GeolocationException
          */
         protected static function doCall($parameters = array())
         {
