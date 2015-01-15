@@ -53,6 +53,7 @@ class View {
         $this->setTemplateName('default');      //The default Template Name
         $this->smarty = new Smarty();
         $this->smarty->setTemplateDir(TPLDIR . '/' . $this->templateName);
+        $this->smarty->setCompileDir(IFCDIR . '/cache');
 
         $ref = new ReflectionClass($this);
         $moduleName = basename(dirname($ref->getFileName()));

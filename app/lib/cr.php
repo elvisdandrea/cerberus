@@ -2,38 +2,14 @@
 
 
 /**
- * Class CR_
+ * Class CR
  *
  * Sorry, not many docs from here
  *
  * The encryption hash is generated dynamically,
  * so only this class can decrypt what's encrypted from here
- *
- * Just use CR_::get($string) to Encrypt or Decrypt anything
- * or CR_::encrypt($string), CR_::decrypt($string)
  */
-class CR_ {
-
-    /**
-     * If encrypted, decrypts
-     * If plain text, encrypts
-     *
-     * Simple as that
-     *
-     * @param   string      $str    - The original string
-     * @return  string              - the encrypted/decrypted string
-     */
-    public static function get($str)
-    {
-
-        if (is_string($str)) {
-            if (substr($str, 0, 1) == '!') {
-                return self::decrypt($str);
-            } else {
-                return self::encrypt($str);
-            }
-        }
-    }
+class CR {
 
     /**
      * Encrypts a text
@@ -57,7 +33,7 @@ class CR_ {
             mcrypt_generic_deinit($td);
             mcrypt_module_close($td);
 
-            return '!' . $pass . '$' . base64_encode($iv . $c_t);
+            return '!' . $pass . '$' . strrev(rtrim(base64_encode($iv . $c_t), '=='));
         } else {
             return false;
         }
@@ -74,7 +50,7 @@ class CR_ {
         $str = substr($str, 1);
         $str = explode('$', $str);
         $pass = $str[0];
-        $str = $str[1];
+        $str = strrev($str[1]) . '==';
         $str = base64_decode($str);
         $lib = mcrypt_module_open('des', '', 'cfb', '');
         $iv_size = mcrypt_enc_get_iv_size($lib);

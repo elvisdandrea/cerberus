@@ -19,6 +19,9 @@ class core {
 
         $url = $_SERVER['REQUEST_URI'];
 
+        if (ENCRYPTURL == '1')
+            $url = CR::decrypt($url);
+
         $uri = str_replace(BASEDIR,'', $url);
         $uri = explode('/', $uri);
 

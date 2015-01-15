@@ -426,7 +426,7 @@ class Model {
         $name = '';
 
         $data = json_encode($data);
-        $data = CR_::encrypt($data);
+        $data = CR::encrypt($data);
 
         file_put_contents(MODELDIR . '/' . md5($name), $data);
     }
@@ -440,7 +440,7 @@ class Model {
      * @param $data     - String criptografada com os dados
      */
     public function createNewConnection($name, $data) {
-        $data = CR_::decrypt($data);
+        $data = CR::decrypt($data);
         $json = json_decode($data, true);
 
         if ($json) {

@@ -45,6 +45,15 @@ define('RESTFUL', '0');
  */
 define('RESTFORMAT', 'json');
 
+/**
+ * If requests must run over encrypted URLs
+ */
+define('ENCRYPTURL', '0');
+
+/**
+ * If it should encrypt data sent through post
+ */
+define('ENCRYPT_POST_DATA', '0');
 
 /**
  * Register Handler Functions

@@ -10,7 +10,7 @@ class filemanager {
     /**
      * Creates directories recursively
      *
-     * @access private
+     * @access public
      * @param  string  $path Path to create
      * @param  integer $mode Optional permissions
      * @return boolean Success
