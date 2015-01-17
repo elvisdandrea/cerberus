@@ -48,12 +48,12 @@ function fatalErrorHandler(){
 function autoLoad($class_name) {
 
     $search = array(
-        MODDIR,
+        MODDIR . '/' . CALL,
         LIBDIR
     );
 
     foreach ($search as $dir) {
-        $file = $dir . '/' . CALL . '/' . $class_name . '.php';
+        $file = $dir . '/' . $class_name . '.php';
         if (file_exists($file)) {
             require_once $file;
             return;

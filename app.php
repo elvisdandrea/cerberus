@@ -25,35 +25,16 @@ define('MODDIR',    MAINDIR .   '/mod');
 define('CSSURL',    MAINURL . '/res/css');
 define('JSURL',     MAINURL . '/res/js');
 
-/**
- * Site Language
- */
-define('LNG', 'pt');
 
 /**
- * Development Enviroment
+ * Some configuration
  */
-define('ENVDEV', '0');
-
-/**
- * If attends to ReSTful requests
- */
-define('RESTFUL', '0');
-
-/**
- * If ReSTful, which format we're working
- */
-define('RESTFORMAT', 'json');
-
-/**
- * If requests must run over encrypted URLs
- */
-define('ENCRYPTURL', '0');
-
-/**
- * If it should encrypt data sent through post
- */
-define('ENCRYPT_POST_DATA', '0');
+define('LNG', 'pt');                    // Site Language
+define('ENVDEV', '0');                  // Development Enviroment
+define('RESTFUL', '0');                 // If attends to ReSTful requests
+define('RESTFORMAT', 'json');           // If ReSTful, which format we're working
+define('ENCRYPTURL', '0');              // If requests must run over encrypted URLs
+define('ENCRYPT_POST_DATA', '0');       // If it should encrypt data sent through post
 
 /**
  * Register Handler Functions
