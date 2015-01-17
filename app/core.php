@@ -31,7 +31,25 @@ class core {
         });
 
         return $uri;
+    }
 
+    /**
+     * Executes the Method called by URI
+     *
+     * @param   array       $uri        - The method class and method
+     */
+    public static function runMethod($uri) {
+
+        if (count($uri)>1 && $uri[0] != '' && $uri[1] != '') {
+            define('CALL', $uri[0]);
+            $module = $uri[0].'Control';
+            $action = $uri[1];
+            if (method_exists($module,$action)){
+                $control = new $module;
+                $result = $control->$action();
+                echo $result;
+            }
+        }
     }
 
     /**
@@ -146,14 +164,11 @@ class core {
      */
     public function execute() {
 
-        if (RESTFUL == '1')
-            self::authenticate();
-
         $uri = $this->loadUrl();
         String::arrayTrimNumericIndexed($uri);
 
         if (!$this->isAjax()) {
-            //TODO: make a home loader
+
             require_once MODDIR . '/home/homeView.php';
             require_once MODDIR . '/home/homeModel.php';
             require_once MODDIR . '/home/homeControl.php';
@@ -163,18 +178,7 @@ class core {
             exit;
         }
 
-        if (count($uri)>1 && $uri[0] != '' && $uri[1] != '') {
-            define('CALL', $uri[0]);
-            $module = $uri[0].'Control';
-            $action = $uri[1];
-            if (method_exists($module,$action)){
-                $control = new $module;
-                $result = $control->$action();
-                echo $result;
-                exit;
-            }
-        }
-
+        $this->runMethod($uri);
         exit;
     }
 

@@ -26,32 +26,23 @@ class homeControl extends Control {
     }
 
     /**
-     * Where it all starts
+     * The home page
      *
-     * For the first run, this is
-     * the function that will render
-     * the whole page with no ajax
+     * @param   array   $uri        - The URI array
      */
     public function itStarts($uri = array()) {
 
         $this->view->loadTemplate('index');
 
-        //TODO: make a core call for url/module load
-        if (count($uri)>1 && $uri[0] != '' && $uri[1] != '') {
-            define('CALL', $uri[0]);
-            $module = $uri[0].'Control';
-            $action = $uri[1];
-
-            if (method_exists($module, $action)) {
-                $control = new $module;
-                ob_start();
-                $control->$action();
-                $result = ob_get_contents();
-                ob_end_clean();
+        if (count($uri) > 1) {
+            ob_start();
+            Core::runMethod($uri);
+            $result = ob_get_contents();
+            ob_end_clean();
+            if ($result != '')
                 $this->view->setVariable('page_content', $result);
-            }
-
         }
+
         echo $this->view->render();
         exit;
     }
