@@ -24,6 +24,7 @@ define('MODDIR',    MAINDIR .   '/mod');
 
 define('CSSURL',    MAINURL . '/res/css');
 define('JSURL',     MAINURL . '/res/js');
+define('IMGURL',    MAINURL . '/res/img');
 
 /**
  * Register Handler Functions
