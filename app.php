@@ -29,6 +29,7 @@ define('JSURL',     MAINURL . '/res/js');
 /**
  * Some configuration
  */
+define('HOME', 'home');                 // Home Sweet Home
 define('LNG', 'pt');                    // Site Language
 define('ENVDEV', '0');                  // Development Enviroment
 define('RESTFUL', '0');                 // If attends to ReSTful requests
