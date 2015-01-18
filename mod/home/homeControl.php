@@ -53,6 +53,6 @@ class homeControl extends Control {
     public function index() {
         #$this->view->loadTemplate( 'elements_example');        //load this template to see the theme elements
         $this->view->loadTemplate( LNG . '/centercontent');
-        $this->commitReplace($this->view->render(), '#two');
+        $this->commitReplace($this->view->render(), '#two', true);
     }
 }

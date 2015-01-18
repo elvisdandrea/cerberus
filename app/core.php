@@ -40,16 +40,17 @@ class core {
      */
     public static function runMethod($uri) {
 
-        if (count($uri)>1 && $uri[0] != '' && $uri[1] != '') {
-            define('CALL', $uri[0]);
-            $module = $uri[0].'Control';
-            $action = $uri[1];
-            if (method_exists($module,$action)){
-                $control = new $module;
-                $result = $control->$action();
-                echo $result;
-            }
-        }
+        if (count($uri) < 1 || $uri[0] == '' || $uri[1] == '') return;
+
+        define('CALL', $uri[0]);
+        $module = $uri[0].'Control';
+        $action = $uri[1];
+
+        if (!method_exists($module, $action)) return;
+
+        $control = new $module;
+        $result = $control->$action();
+        echo $result;
     }
 
     /**
@@ -59,15 +60,18 @@ class core {
      */
     public function __construct() {
 
-        include_once LIBDIR . '/smarty/Smarty.class.php';
+        foreach(array(
+                    LIBDIR . '/smarty/Smarty.class.php',
 
-        include_once LIBDIR . '/cr.php';
-        include_once LIBDIR . '/html.php';
-        include_once LIBDIR . '/string.php';
+                    LIBDIR . '/cr.php',
+                    LIBDIR . '/html.php',
+                    LIBDIR . '/string.php',
 
-        include_once IFCDIR . '/control.php';
-        include_once IFCDIR . '/model.php';
-        include_once IFCDIR . '/view.php';
+                    IFCDIR . '/control.php',
+                    IFCDIR . '/model.php',
+                    IFCDIR . '/view.php')
+
+                as $dep) include_once $dep;
 
     }
 
@@ -167,13 +171,16 @@ class core {
         $uri = $this->loadUrl();
         String::arrayTrimNumericIndexed($uri);
 
+        /**
+         * Going Home
+         */
         if (!$this->isAjax()) {
 
-            require_once MODDIR . '/home/homeView.php';
-            require_once MODDIR . '/home/homeModel.php';
-            require_once MODDIR . '/home/homeControl.php';
+            foreach (array('View', 'Model', 'Control') as $class)
+                require_once MODDIR . '/' . HOME . '/' . HOME . $class . '.php';
 
-            $home = new homeControl();
+            $homeClass = HOME . 'Control';
+            $home = new $homeClass();
             $home->itStarts($uri);
             exit;
         }
