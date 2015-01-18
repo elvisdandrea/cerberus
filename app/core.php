@@ -40,10 +40,12 @@ class core {
      */
     public static function runMethod($uri) {
 
-        if (count($uri) < 1 || $uri[0] == '' || $uri[1] == '') return;
+        if (count($uri) < 1 || $uri[0] == '') return;
 
         define('CALL', $uri[0]);
         $module = $uri[0].'Control';
+        if ($uri[1] == '') $uri[1] = $uri[0] . 'Page';
+
         $action = $uri[1];
 
         if (!method_exists($module, $action)) return;
