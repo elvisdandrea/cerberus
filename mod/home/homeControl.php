@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * Class homeControl
@@ -43,7 +43,7 @@ class homeControl extends Control {
             $this->view->setVariable('page_content', $result);
         }
 
-        $this->view->loadTemplate('index');
+        $this->view->loadTemplate('home');
         echo $this->view->render();
         exit;
     }
@@ -52,8 +52,8 @@ class homeControl extends Control {
      * When returning the home page, loads the inner content only
      */
     public function homePage() {
-        #$this->view->loadTemplate( 'elements_example');        //load this template to see the theme elements
-        $this->view->loadTemplate( LNG . '/centercontent');
-        $this->commitReplace($this->view->render(), '#two', true);
+
+        $this->view->loadTemplate('overview');
+        $this->commitReplace($this->view->render(), '#center', true);
     }
 }

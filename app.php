@@ -45,6 +45,7 @@ define('RESTFUL', '0');                 // If attends to ReSTful requests
 define('RESTFORMAT', 'json');           // If ReSTful, which format we're working
 define('ENCRYPTURL', '0');              // If requests must run over encrypted URLs
 define('ENCRYPT_POST_DATA', '0');       // If it should encrypt data sent through post
+define('METHOD_NOT_FOUND', 'notFound'); // What to call when a method is not found
 
 /**
  * Register Core Class

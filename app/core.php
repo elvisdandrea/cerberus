@@ -48,7 +48,14 @@ class core {
 
         $action = $uri[1];
 
-        if (!method_exists($module, $action)) return;
+        if (!method_exists($module, $action)) {
+            if (!self::isAjax()) return;
+
+            $notFoundAction = METHOD_NOT_FOUND;
+            $home = self::requireHome();
+            $home->$notFoundAction($uri);
+            exit;
+        }
 
         $control = new $module;
         $result = $control->$action();
@@ -83,6 +90,17 @@ class core {
     }
 
     /**
+     * Include Home Page Module Classes
+     */
+    private static function requireHome() {
+
+        foreach (array('View', 'Model', 'Control') as $class)
+            require_once MODDIR . '/' . HOME . '/' . HOME . $class . '.php';
+        $homeClass = HOME . 'Control';
+        return new $homeClass();
+    }
+
+    /**
      * The main execution
      *
      * It will verify the URL and
@@ -103,12 +121,10 @@ class core {
          * Going Home
          */
         if (!$this->isAjax()) {
-
             foreach (array('View', 'Model', 'Control') as $class)
                 require_once MODDIR . '/' . HOME . '/' . HOME . $class . '.php';
 
-            $homeClass = HOME . 'Control';
-            $home = new $homeClass();
+            $home = $this->requireHome();
             $home->itStarts($uri);
             exit;
         }
