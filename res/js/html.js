@@ -78,6 +78,7 @@ Html.prototype = {
             success: callback,
             async: true,
             error: function(xhr, textStatus, error){
+                $('body').html(xhr.responseText);
                 console.log(xhr.statusText);
                 console.log(textStatus);
                 console.log(error);
