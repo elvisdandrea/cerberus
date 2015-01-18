@@ -65,10 +65,6 @@ class core {
         foreach(array(
                     LIBDIR . '/smarty/Smarty.class.php',
 
-                    LIBDIR . '/cr.php',
-                    LIBDIR . '/html.php',
-                    LIBDIR . '/string.php',
-
                     IFCDIR . '/control.php',
                     IFCDIR . '/model.php',
                     IFCDIR . '/view.php')
@@ -87,79 +83,6 @@ class core {
     }
 
     /**
-     * Validar dados obrigatórios em um array
-     *
-     * @param   array   $data           - O array a ser verificado
-     * @param   array   $validation     - Um array contendo a lista de índices que $data deve conter
-     */
-    public static function validate($data, $validation = array()) {
-
-        foreach ($validation as $index)
-            (isset($data[$index]) && $data[$index] != '') || self::throwError('Voce deve informar "' . $index . '" para este metodo.');
-    }
-
-    /**
-     * Autenticar?
-     *
-     * Um processo simples, sem token, apenas uma
-     * pequena garantia de que não será feito force
-     */
-    public static function authenticate() {
-
-        //TODO: ReSTful Authentication method
-    }
-
-    /**
-     * Throws a 404 Error
-     *
-     * Used for security features
-     */
-    public static function throw404() {
-        header('HTTP/1.0 404 Not Found');
-        exit;
-    }
-
-    /**
-     * ReSTful error throw
-     *
-     * In case a catchable error or validation error,
-     * throwing a json (or desired ReST format) with status 400 is a good concept
-     *
-     * @param   string      $message        - A mensagem de texto
-     * @throws  Exception
-     */
-    public static function throwError($message) {
-
-        //TODO: handle other formats
-        http_response_code(400);
-        header('Content-type: application/json');
-
-        $response = array(
-            'status'        => 400,
-            'message'       => $message
-        );
-
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    /**
-     * ReSTful Response
-     *
-     * @param   array   $data       - Array com os dados da resposta
-     * @throws  Exception
-     */
-    public static function response(array $data) {
-
-        //TODO: handle other formats
-        http_response_code(200);
-        header('Content-type: application/json');
-
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    /**
      * The main execution
      *
      * It will verify the URL and
@@ -172,6 +95,9 @@ class core {
 
         $uri = $this->loadUrl();
         String::arrayTrimNumericIndexed($uri);
+
+        if (RESTFUL == '1')
+            Rest::authenticate();
 
         /**
          * Going Home

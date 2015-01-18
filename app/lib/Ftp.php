@@ -5,7 +5,7 @@
  *
  * Class for manipulating ftp transfer
  */
-class ftp{
+class Ftp {
 
     /**
      * The Resource Connector
