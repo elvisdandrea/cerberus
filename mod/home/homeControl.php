@@ -32,17 +32,18 @@ class homeControl extends Control {
      */
     public function itStarts($uri = array()) {
 
-        $this->view->loadTemplate('index');
-
         if (count($uri) > 0) {
             ob_start();
             Core::runMethod($uri);
             $result = ob_get_contents();
             ob_end_clean();
-            if ($result != '')
-                $this->view->setVariable('page_content', $result);
+            if ($result == '')
+                $result = $this->view->get404();
+
+            $this->view->setVariable('page_content', $result);
         }
 
+        $this->view->loadTemplate('index');
         echo $this->view->render();
         exit;
     }
