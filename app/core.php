@@ -121,8 +121,6 @@ class core {
          * Going Home
          */
         if (!$this->isAjax()) {
-            foreach (array('View', 'Model', 'Control') as $class)
-                require_once MODDIR . '/' . HOME . '/' . HOME . $class . '.php';
 
             $home = $this->requireHome();
             $home->itStarts($uri);

@@ -32,7 +32,7 @@
     }
     .text li {
         padding: 0.3em;
-        font-size: 15px;
+        font-size: 13px;
     }
     .text label {
         line-height: 30px;
@@ -59,10 +59,10 @@
         <img src="{$smarty.const.IMGURL}/logo.png" alt="cerberus_logo" width="115px"/>
         <label>Cerberus Framework</label></h1>
     <div class="message">
-        <div class="text">Ok, let's get started.
+        <div class="text">
+            Ok, let's get started.
         <ul>
-            <li>I created this framework because I needed something straight forward and still have high quality classes and tools.</li>
-            <li>Straight forward, therefore faster!</li>
+            <li>I created this framework because I needed something straight forward but still have high quality classes and tools.</li>
             <li>Every request will be routed automatically to the controller/action on module folder. Yes, modular ftw!</li>
             <li>Just use Rest class in lib for response and you don't need an entire different universe for ReSTful apps, you can use the same damn logic.</li>
             <li>We have a token based ReST authentication method, and you can choose where and how to store passwords.</li>
@@ -75,9 +75,10 @@
             <li>A variety of tools are in the lib folder. You can safely delete any of them you don't need.</li>
             <li>Easy encryption method with random key, and you can create a secret passphrase to make it unique to you.</li>
             <li>Model has a "DBgrid" that can automatically display database query result content and you can stylize it.</li>
+            <li>Multiple template support. Changing templates by simply changing view name.</li>
             <li>Prefer twig? Add it in lib folder and replace the "include" in View class.</li>
         </ul>
-            <label>Fork me: <a href="https://github.com/elvisdandrea/cerberus">https://github.com/elvisdandrea/cerberus</a></label>
+            Fork me: <a href="https://github.com/elvisdandrea/cerberus">https://github.com/elvisdandrea/cerberus</a>
             <div class="footer"><span>High quality software and over-engineering are two different things!</span></div>
         </div>
     </div>
