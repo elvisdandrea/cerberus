@@ -34,6 +34,9 @@
         padding: 0.3em;
         font-size: 15px;
     }
+    .text label {
+        line-height: 30px;
+    }
     .banner {
         margin: 2.2em auto 0;
         width: 50%;

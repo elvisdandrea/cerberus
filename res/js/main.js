@@ -46,7 +46,7 @@ $(document).on('submit','form[action]', function(a){
                 return false;
             },
             error: function(xhr, textStatus, error){
-                $('body').html(xhr.responseText);
+                $('html').html(xhr.responseText);
                 console.log(xhr.statusText);
                 console.log(textStatus);
                 console.log(error);
