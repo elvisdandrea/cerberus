@@ -1,0 +1,54 @@
+body {
+    clear: both;
+    background: url("http://localhost/cerberus/tpl/default/res/img/bg.jpg") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    font-family: "Strait",sans-serif;
+}
+
+h1 {
+    clear: both;
+    color: #fff;
+    padding: 30px;
+    font-family: "Fjalla One",sans-serif;
+    font-size: 50px;
+    margin-top: 1px;
+    text-shadow: 6px 1px 6px #333;
+}
+h1 img {
+    float: left;
+    margin-top: -0.5em;
+    padding: 0 1em 0 0;
+}
+.text {
+    clear: both;
+    border: medium none;
+    color: #98af95;
+    font-family: "Strait",sans-serif;
+    font-size: 18px;
+    outline: medium none;
+    padding: 6px 30px 6px 6px;
+    margin: 0;
+    display: block;
+}
+.text li {
+    padding: 0.3em;
+    font-size: 13px;
+}
+.text label {
+    line-height: 30px;
+}
+.banner {
+    margin: 2.2em auto 0;
+    width: 50%;
+}
+.message {
+    background: none repeat scroll 0px 0px rgba(0, 0, 0, 0.25);
+    text-shadow: 6px 1px 6px #333;
+    padding: 1.2em;
+}
+.footer {
+    text-align: center;
+    margin: 1.8em 2.8em 0;
+    font-size: 22px;
+    font-weight: bold;
+    color: #4cae4c;
+}

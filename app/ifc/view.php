@@ -61,7 +61,7 @@ class View {
 
         define('T_CSSURL',  MAINURL . '/tpl/' . $this->templateName . '/res/css' );
         define('T_JSURL',   MAINURL . '/tpl/' . $this->templateName . '/res/js' );
-        define('T_IMGURL',  MAINURL . '/tpl/' . $this->templateName . '/res/images' );
+        define('T_IMGURL',  MAINURL . '/tpl/' . $this->templateName . '/res/img' );
         define('T_FONTURL', MAINURL . '/tpl/' . $this->templateName . '/res/fonts' );
 
     }
