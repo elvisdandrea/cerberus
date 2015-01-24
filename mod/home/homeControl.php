@@ -44,6 +44,9 @@ class homeControl extends Control {
         }
 
         $this->view->loadTemplate('home');
+
+        #$this->view->appendJs('example');  // Example on appending module javascript files
+
         echo $this->view->render();
         exit;
     }
@@ -55,5 +58,15 @@ class homeControl extends Control {
 
         $this->view->loadTemplate('overview');
         $this->commitReplace($this->view->render(), '#center', true);
+    }
+
+    /**
+     * When an ajax Method is not found
+     *
+     * @param   array       $url        - The URL in case you need
+     */
+    public function notFound($url) {
+
+        $this->commitReplace($this->view->get404(), 'body');
     }
 }

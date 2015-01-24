@@ -1,6 +1,6 @@
 body {
     clear: both;
-    background: url("http://localhost/cerberus/tpl/default/res/img/bg.jpg") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    background: url("../img/bg.jpg") repeat scroll 0 0 rgba(0, 0, 0, 0);
     font-family: "Strait",sans-serif;
 }
 
