@@ -9,8 +9,11 @@
                 <img src="{$smarty.const.T_IMGURL}/logo.png" alt="cerberus_logo" width="115px"/>
                 <label>Cerberus Framework</label></h1>
             <div class="message">
+                {if isset($page_content)}
+                        {$page_content}
+                    {else}
                 <div class="text">
-                    Ok, let's get started.
+                    Ok, let's get it started.
                 <ul>
                     <li>I created this framework because I needed something straight forward but still have high quality classes and tools.</li>
                     <li>Every request will be routed automatically to the controller/action on module folder. Yes, modular!</li>
@@ -32,6 +35,7 @@
                     Fork me: <a href="https://github.com/elvisdandrea/cerberus">https://github.com/elvisdandrea/cerberus</a>
                     <div class="footer"><span>High quality software and over-engineering are two different things!</span></div>
                 </div>
+                {/if}
             </div>
         </div>
     </body>
