@@ -230,6 +230,15 @@ class Model {
     private $gridRowLink = array('action' => '', 'fieldId' => '');
 
     /**
+     * Sometimes we already have an
+     * entire style for tables but they
+     * depend to set a specific class
+     *
+     * @var string
+     */
+    private $gridClass = '';
+
+    /**
      * The Current Connection Resource Name
      *
      * @var string
@@ -289,6 +298,15 @@ class Model {
             'type'      => $type,
             'subtitle'  => $subtitle
         );
+    }
+
+    /**
+     * Sets the table class in dbGrid
+     *
+     * @param   string      $class      - The class name
+     */
+    public function setGridClass($class) {
+        $this->gridClass = $class;
     }
 
     /**
@@ -887,6 +905,7 @@ class Model {
         }
 
         $view->setVariable('head', $this->dbGridColumns);
+        $view->setVariable('gridClass', $this->gridClass);
         $view->setVariable('content', $this->dataset);
         $view->loadTemplate($this->dbGridTemplate);
 

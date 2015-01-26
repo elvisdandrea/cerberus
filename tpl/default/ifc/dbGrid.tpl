@@ -8,11 +8,11 @@
     E-mail: elvis.vista@gmail.com
 -->
 <div class="table-wrapper">
-    <table id="{$id}">
+    <table id="{$id}" class="{$gridClass}">
         <thead>
         {if (!isset($showTitles) || (isset($showTitles) && $showTitles)) }
-            {foreach from=$head key="title" item="field"}
-                <th id="{$id}_{$field}">{$title}</th>
+            {foreach from=$head key="field" item="data"}
+                <th id="{$id}_{$data['field']}">{$data['title']}</th>
             {/foreach}
         {/if}
         </thead>
