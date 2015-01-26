@@ -863,7 +863,7 @@ class Model {
      * @return  array               - The result array
      */
     public function getResult() {
-        return $this->result;
+        return $this->dataset;
     }
 
 

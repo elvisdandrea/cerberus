@@ -34,13 +34,9 @@ class String {
      * @return  array                   - The escaped array
      */
     public static function ClearArray( $array ) {
-        foreach ( $array as $key => $value ) {
-            if ( is_array( $value ) ) {
-                $array[$key] = self::ClearArray( $value );
-            } else {
-                $array[$value] = self::ClearString( $value );
-            }
-        }
+        array_walk_recursive($array, function(&$item){
+            $item = self::ClearString($item);
+        });
         return $array;
     }
 

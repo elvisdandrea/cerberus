@@ -115,7 +115,7 @@ class core {
         String::arrayTrimNumericIndexed($uri);
 
         if (RESTFUL == '1')
-            Rest::authenticate();
+            RestServer::authenticate();
 
         /**
          * Going Home

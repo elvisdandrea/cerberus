@@ -6,7 +6,7 @@
  * The ReSTful interpretation of methods
  * to easily handle requests
  */
-class Rest {
+class RestServer {
 
     /**
      * Authenticate?

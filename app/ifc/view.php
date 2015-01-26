@@ -87,21 +87,15 @@ class View {
         if (count($this->jsFiles) == 0) return '';
 
         $result = array();
+        $result[] = '<script>';
 
-        if (!Core::isAjax())
-            $result[] = '<script>';
-
-        /**
-         * No need to check if file exists, let the handler "handle" it
-         */
         foreach ($this->jsFiles as $jsFileName) {
             $jsFileName = TPLDIR . '/' . $this->templateName . '/' . $this->moduleName . '/js/' . $jsFileName . '.js';
             $content = file_get_contents($jsFileName);
             $result[] = $content;
         }
 
-        if (!Core::isAjax())
-            $result[] = '</script>';
+        $result[] = '</script>';
 
         return implode(' ', $result);
     }
