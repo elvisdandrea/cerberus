@@ -477,7 +477,6 @@ class Model {
      */
     private function connect($name) {
 
-        print_r($this->connections); exit;
         $this->connections[$name]['conn'] =
             new PDO(
                 'mysql:host=' . $this->connections[$name]['host'] . ';dbname=' . $this->connections[$name]['db'],
