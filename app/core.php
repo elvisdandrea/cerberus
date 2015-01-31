@@ -54,7 +54,7 @@ class core {
             $notFoundAction = METHOD_NOT_FOUND;
             $home = self::requireHome();
             $home->$notFoundAction($uri);
-            exit;
+            self::terminate();
         }
 
         $control = new $module;
@@ -124,10 +124,19 @@ class core {
 
             $home = $this->requireHome();
             $home->itStarts($uri);
-            exit;
+            $this->terminate();
         }
 
         $this->runMethod($uri);
+        $this->terminate();
+    }
+
+    /**
+     * Prevent Memory Leaks
+     */
+    public function terminate() {
+
+        unset($this);
         exit;
     }
 

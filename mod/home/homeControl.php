@@ -48,7 +48,7 @@ class homeControl extends Control {
         #$this->view->appendJs('example');  // Example on appending module javascript files
 
         echo $this->view->render();
-        exit;
+        $this->terminate();
     }
 
     /**

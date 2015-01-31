@@ -99,6 +99,15 @@ class Control {
     }
 
     /**
+     * Preventing Memory Leaks
+     */
+    protected function terminate() {
+
+        unset($this);
+        exit;
+    }
+
+    /**
      * Renders a HTML onto screen
      *
      * Still to be implemented
@@ -107,7 +116,7 @@ class Control {
      */
     protected function commitPrint($html) {
         echo $html;
-        exit;
+        $this->terminate();
     }
 
     /**
@@ -124,7 +133,7 @@ class Control {
         } else {
             echo Html::ReplaceHtml($html, $block);
         }
-        $stay || exit;
+        $stay || $this->terminate();;
     }
 
     /**
@@ -141,7 +150,7 @@ class Control {
         } else {
             echo Html::AddHtml($html, $block);
         }
-        $stay || exit;
+        $stay || $this->terminate();;
     }
 
     /**
@@ -152,7 +161,7 @@ class Control {
      */
     protected function commitShow($block, $stay = false) {
         echo Html::ShowHtml($block);
-        $stay || exit;
+        $stay || $this->terminate();;
     }
 
     /**
@@ -163,7 +172,7 @@ class Control {
      */
     protected function commitHide($block, $stay = false) {
         echo Html::HideHtml($block);
-        $stay || exit;
+        $stay || $this->terminate();;
     }
 
     /**
@@ -176,7 +185,7 @@ class Control {
     protected function scrollToElement($element, $speed = '1000', $stay = false) {
         if (Core::isAjax()) {
             echo '$("html, body").animate({scrollTop: $("'.$element.'").offset().top}, ' . $speed . ');';
-            $stay || exit;
+            $stay || $this->terminate();;
         } else {
             echo '<script>$("html, body").animate({scrollTop: $("'.$element.'").offset().top}, ' . $speed . ');</script>';
         }

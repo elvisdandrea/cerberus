@@ -54,5 +54,4 @@ require_once APPDIR . '/core.php';
 
 $core = new core();
 $core->execute();
-
-exit;
+$core->terminate();

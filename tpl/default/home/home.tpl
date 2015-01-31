@@ -1,3 +1,12 @@
+<!--
+    Cerberus Framework
+
+    This is a template visualize the framework
+    functionality. 
+
+    Author: Elvis D'Andrea
+    E-mail: elvis.vista@gmail.com
+-->
 <html>
     <head>
         <title>Cerberus - Do it simple and do it efficient</title>
@@ -9,9 +18,12 @@
                 <img src="{$smarty.const.T_IMGURL}/logo.png" alt="cerberus_logo" width="115px"/>
                 <label>Cerberus Framework</label></h1>
             <div class="message">
+
+                <!--    This is required for Ajax Requests -->
                 {if isset($page_content)}
                         {$page_content}
                     {else}
+
                 <div class="text">
                     Ok, let's get it started.
                 <ul>

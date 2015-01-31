@@ -14,55 +14,27 @@ class Geolocation
         const API_URL = 'http://maps.googleapis.com/maps/api/geocode/json';
      
         /**
-         * Do call
+         * Calls Google API
          *
          * @param  array  $parameters
-         * @return object
-         * @throws GeolocationException
+         * @return array
          */
-        protected static function doCall($parameters = array())
+        private static function callAPI($parameters = array())
         {
-            // check if curl is available
-            if (!function_exists('curl_init')) {
-                // throw error
-                throw new GeolocationException('This method requires cURL (http://php.net/curl), it seems like the extension isn\'t installed.');
-            }
-     
-            // define url
+
             $url = self::API_URL . '?';
-     
-            // add every parameter to the url
             foreach ($parameters as $key => $value) $url .= $key . '=' . urlencode($value) . '&';
-     
-            // trim last &
             $url = trim($url, '&');
-     
-            // init curl
             $curl = curl_init();
-     
-            // set options
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLOPT_TIMEOUT, 10);
             if (ini_get('open_basedir') == '' && ini_get('safe_mode' == 'Off')) curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-     
-            // execute
             $response = curl_exec($curl);
-     
-            // fetch errors
-            $errorNumber = curl_errno($curl);
-            $errorMessage = curl_error($curl);
-     
-            // close curl
+
             curl_close($curl);
-     
-            // we have errors
-            if ($errorNumber != '') throw new GeolocationException($errorMessage);
-     
-            // redefine response as json decoded
             $response = json_decode($response);
-     
-            // return the content
+
             return $response->results;
         }
      
@@ -75,22 +47,21 @@ class Geolocation
          */
         public static function getAddress($latitude, $longitude)
         {
-            // define result
-            $results = self::doCall(array(
+
+            $results = self::callAPI(array(
                 'latlng' => $latitude . ',' . $longitude,
                 'sensor' => 'false'
             ));
-     
-            // return address
+
             return array(
-                'label' => (string) $results[0]->formatted_address,
-                'street' => (string) $results[0]->address_components[1]->short_name,
-                'streetNumber' => (string) $results[0]->address_components[0]->short_name,
-                'city' => (string) $results[0]->address_components[3]->short_name,
-                'cityLocal' => (string) $results[0]->address_components[2]->short_name,
-                'zip' => (string) $results[0]->address_components[7]->short_name,
-                'country' => (string) $results[0]->address_components[6]->short_name,
-                'countryLabel' => (string) $results[0]->address_components[6]->long_name
+                'label'         => (string) $results[0]->formatted_address,
+                'street'        => (string) $results[0]->address_components[1]->short_name,
+                'streetNumber'  => (string) $results[0]->address_components[0]->short_name,
+                'city'          => (string) $results[0]->address_components[3]->short_name,
+                'cityLocal'     => (string) $results[0]->address_components[2]->short_name,
+                'zip'           => (string) $results[0]->address_components[7]->short_name,
+                'country'       => (string) $results[0]->address_components[6]->short_name,
+                'countryLabel'  => (string) $results[0]->address_components[6]->long_name
             );
         }
      
@@ -111,6 +82,10 @@ class Geolocation
             $zip = null,
             $country = null
         ) {
+
+            /**
+             * Dafuq is this? I'll remake it as soon as possible
+             */
             // init item
             $item = array();
      
@@ -145,18 +120,3 @@ class Geolocation
             );
         }
     }
-     
-    /**
-     * Geolocation Exception
-     *
-     * @author Jeroen Desloovere <info@jeroendesloovere.be>
-     */
-    class GeolocationException extends \Exception {}
-     
-/*     
-    // usage
-    require_once get_template_directory() . '/inc/Geolocation.php';
-    use JeroenDesloovere\Geolocation\Geolocation;
-     
-    $geo = Geolocation::getCoordinates($loja->Endereco, $loja->No, $cidade, '', $estado);
-*/
