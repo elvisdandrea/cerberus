@@ -9,7 +9,7 @@
 -->
 <html>
     <head>
-        <title>Cerberus - Do it simple and do it efficient</title>
+        <title>Cerberus - Do it simple and do it efficiently</title>
         <link rel="stylesheet" href="{$smarty.const.T_CSSURL}/default.css" />
     </head>
     <body>

@@ -1,3 +1,12 @@
+<!--
+    Cerberus Framework
+
+    This is a template of the form
+    for encrypted database file creation
+
+    Author: Elvis D'Andrea
+    E-mail: elvis.vista@gmail.com
+-->
 <div class="text">
     <a href="{$smarty.const.BASEDIR}home">Go back!</a>
     <form action="{$smarty.const.BASEDIR}home/savedbfile">

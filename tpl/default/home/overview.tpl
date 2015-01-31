@@ -1,3 +1,12 @@
+<!--
+    Cerberus Framework
+
+    This is a template visualize the framework
+    functionality.
+
+    Author: Elvis D'Andrea
+    E-mail: elvis.vista@gmail.com
+-->
 <div class="text">
     Ok, let's get it started.
     <ul>
