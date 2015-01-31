@@ -2,7 +2,7 @@
     Cerberus Framework
 
     This is a template visualize the framework
-    functionality. 
+    functionality.
 
     Author: Elvis D'Andrea
     E-mail: elvis.vista@gmail.com
