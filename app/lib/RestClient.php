@@ -67,8 +67,7 @@ class RestClient {
     /**
      * @return mixed
      */
-    public function getParams()
-    {
+    public function getParams() {
         return $this->params;
     }
 
@@ -78,8 +77,7 @@ class RestClient {
      * @param string $param         - The param name
      * @param string $value         - The param value
      */
-    public function addParam($param, $value)
-    {
+    public function addParam($param, $value) {
         $this->params[$param] = $value;
     }
 
@@ -94,56 +92,49 @@ class RestClient {
     /**
      * @return mixed
      */
-    public function getMethod()
-    {
+    public function getMethod() {
         return $this->method;
     }
 
     /**
      * @param mixed $method
      */
-    public function setMethod($method)
-    {
+    public function setMethod($method) {
         !in_array($method, array('get', 'post', 'put', 'delete', 'update')) || $this->method = $method;
     }
 
     /**
      * @return mixed
      */
-    public function getUrl()
-    {
+    public function getUrl() {
         return $this->url;
     }
 
     /**
      * @param mixed $url
      */
-    public function setUrl($url)
-    {
+    public function setUrl($url) {
         $this->url = $url;
     }
 
     /**
      * @return mixed
      */
-    public function getUri()
-    {
+    public function getUri() {
         return $this->uri;
     }
 
     /**
      * @param mixed $uri
      */
-    public function setUri($uri)
-    {
+    public function setUri($uri) {
         $this->uri = $uri;
     }
 
     /**
      * @return mixed
      */
-    public function getHeaders()
-    {
+    public function getHeaders() {
         return $this->headers;
     }
 
@@ -153,11 +144,15 @@ class RestClient {
      * @param string $header
      * @param string $value
      */
-    public function addHeader($header, $value)
-    {
+    public function addHeader($header, $value) {
         $this->headers[$header] = $value;
     }
 
+    /**
+     * Returns the Request Response
+     *
+     * @return mixed
+     */
     public function getResponse() {
         return $this->response;
     }

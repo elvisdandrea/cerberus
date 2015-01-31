@@ -25,12 +25,88 @@ class Control {
     private $get;
 
     /**
+     * The Object View
+     *
+     * @var View
+     */
+    private $view = array();
+
+    /**
+     * The Object Model List
+     *
+     * @var
+     */
+    private $model = array();
+
+    /**
+     * The Controller Module Name
+     *
+     * @var
+     */
+    private $moduleName;
+
+    /**
      * Thou shalt not call superglobals directly
      * even though I'm doing it in this function
      */
     public function __construct() {
         $this->post = String::ClearArray($_POST);
         $this->get  = String::ClearArray($_GET);
+
+        $ref = new ReflectionClass($this);
+        $this->moduleName = basename(dirname($ref->getFileName()));
+
+        $this->newView();
+        $this->newModel();
+    }
+
+    /**
+     * Returns the desired View
+     *
+     * @param   string      $name       - The View name
+     * @return  View
+     */
+    public function view($name = 'default') {
+
+        if (!isset($this->view[$name])) return false;
+        return $this->view[$name];
+    }
+
+    /**
+     * Creates a new View in the view list
+     *
+     * @param   string      $name       - The View name
+     * @return  bool
+     */
+    public function newView($name = 'default') {
+
+        $this->view[$name] = new View();
+        $this->view($name)->setModuleName($this->moduleName);
+    }
+
+    /**
+     * Returns the desired model
+     *
+     * @param   string      $name       - The model name
+     * @return  bool
+     */
+    public function model($name = DEFAULT_CONNECTION) {
+
+        if (!isset($this->model[$name])) return false;
+        return $this->model[$name];
+    }
+
+    /**
+     * Creates a new Model in the Model list
+     *
+     * Specify no name to reset default model
+     *
+     * @param   string      $name       - The model and connection name
+     */
+    public function newModel($name = DEFAULT_CONNECTION) {
+
+        $model = $this->moduleName . 'Model';
+        $this->model[$name] = new $model($name);
     }
 
     /**
@@ -103,6 +179,8 @@ class Control {
      */
     protected function terminate() {
 
+        unset($this->view);
+        unset($this->model);
         unset($this);
         exit;
     }
@@ -127,7 +205,7 @@ class Control {
      * @param   string      $block  - The element
      * @param   bool        $stay   - If it should not finish execution after rendering
      */
-    protected function commitReplace($html, $block, $stay = false) {
+    protected function commitReplace($html, $block, $stay = true) {
         if (!Core::isAjax()) {
             echo $html;
         } else {
@@ -144,13 +222,13 @@ class Control {
      * @param   string      $block  - The element
      * @param   bool        $stay   - If it should not finish execution after rendering
      */
-    protected function commitAdd($html, $block, $stay = false) {
+    protected function commitAdd($html, $block, $stay = true) {
         if (!Core::isAjax()) {
             echo $html;
         } else {
             echo Html::AddHtml($html, $block);
         }
-        $stay || $this->terminate();;
+        $stay || $this->terminate();
     }
 
     /**
@@ -159,9 +237,9 @@ class Control {
      * @param   string      $block  - The element
      * @param   bool        $stay   - If it should not finish execution after rendering
      */
-    protected function commitShow($block, $stay = false) {
+    protected function commitShow($block, $stay = true) {
         echo Html::ShowHtml($block);
-        $stay || $this->terminate();;
+        $stay || $this->terminate();
     }
 
     /**
@@ -170,9 +248,9 @@ class Control {
      * @param   string      $block  - The element
      * @param   bool        $stay   - If it should not finish execution after rendering
      */
-    protected function commitHide($block, $stay = false) {
+    protected function commitHide($block, $stay = true) {
         echo Html::HideHtml($block);
-        $stay || $this->terminate();;
+        $stay || $this->terminate();
     }
 
     /**
@@ -182,10 +260,10 @@ class Control {
      * @param   string      $speed      - The scroll speed
      * @param   bool        $stay       - If it should not finish execution after rendering
      */
-    protected function scrollToElement($element, $speed = '1000', $stay = false) {
+    protected function scrollToElement($element, $speed = '1000', $stay = true) {
         if (Core::isAjax()) {
             echo '$("html, body").animate({scrollTop: $("'.$element.'").offset().top}, ' . $speed . ');';
-            $stay || $this->terminate();;
+            $stay || $this->terminate();
         } else {
             echo '<script>$("html, body").animate({scrollTop: $("'.$element.'").offset().top}, ' . $speed . ');</script>';
         }

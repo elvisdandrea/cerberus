@@ -73,6 +73,17 @@ class Html {
     }
 
     /**
+     * Function to Asynchronously load
+     * a select input content
+     *
+     * @param   string      $id     - The select input Id
+     * @return  string
+     */
+    public static function AsyncLoadList($id) {
+        return 'Html.AsyncLoadList(\'' . $id . '\');';
+    }
+
+    /**
      * A static function to statically get
      * a POST value when not in controllers
      *
@@ -80,6 +91,7 @@ class Html {
      * @return  bool
      */
     public static function GetPost($name) {
+
         if (isset($_POST[$name])) {
             return $_POST[$name];
         }

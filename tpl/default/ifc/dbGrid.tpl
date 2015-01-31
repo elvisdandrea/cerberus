@@ -28,7 +28,7 @@
             <tr id="{$id}_{$index}"
                     {if ($rowAction != '' && $rowFieldId != '')}
                         style="cursor: pointer;"
-                        onclick="quickLink('{$rowAction}?{$rowFieldId}={$row[$rowFieldId]}')"
+                        onclick="Main.quickLink('{$rowAction}?{$rowFieldId}={$row[$rowFieldId]}')"
                     {/if}>
 
 

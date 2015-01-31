@@ -94,8 +94,8 @@ class core {
      */
     private static function requireHome() {
 
-        foreach (array('View', 'Model', 'Control') as $class)
-            require_once MODDIR . '/' . HOME . '/' . HOME . $class . '.php';
+        foreach (array('Model', 'Control') as $pos => $class)
+            require_once MODDIR . '/' . HOME . '/' .  HOME  . $class . '.php';
         $homeClass = HOME . 'Control';
         return new $homeClass();
     }

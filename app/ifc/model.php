@@ -256,9 +256,8 @@ class Model {
     private $connections = array();
 
 
-    public function __construct($connection = 'connection1') {
+    public function __construct($connection = DEFAULT_CONNECTION) {
 
-        //$this->generateConnectionFile();      //For first time, create the database connection file
         $this->id = uniqid();
         $this->loadConnectionFile($connection);
         $this->setConnection($connection);
@@ -428,20 +427,25 @@ class Model {
     }
 
     /**
-     * Whenever you need to create a connection file,
+     * * Whenever you need to create a connection file,
      * Just insert data and call this function
      * in any method you want
+     *
+     * @param   string      $host       - The Host Name
+     * @param   string      $user       - The Database User Name
+     * @param   string      $password   - The User Password
+     * @param   string      $database   - The Database Name
      */
-    public function generateConnectionFile() {
+    public function generateConnectionFile($name, $host, $user, $password, $database) {
 
         $data = array(
-            'host' => '',
-            'user' => '',
-            'pass' => '',
-            'db'   => ''
+            'host' => $host,
+            'user' => $user,
+            'pass' => $password,
+            'db'   => $database
         );
 
-        $name = '';
+        $name = $name;
 
         $data = json_encode($data);
         $data = CR::encrypt($data);
@@ -473,6 +477,7 @@ class Model {
      */
     private function connect($name) {
 
+        print_r($this->connections); exit;
         $this->connections[$name]['conn'] =
             new PDO(
                 'mysql:host=' . $this->connections[$name]['host'] . ';dbname=' . $this->connections[$name]['db'],

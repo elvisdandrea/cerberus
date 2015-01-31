@@ -45,6 +45,17 @@ h1 img {
     text-shadow: 6px 1px 6px #333;
     padding: 1.2em;
 }
+
+.message span {
+    display: block;
+    margin-top: 0.5em;
+}
+
+.message span label {
+    width: 12.2em;
+    display: inline-block;
+}
+
 .footer {
     text-align: center;
     margin: 1.8em 2.8em 0;

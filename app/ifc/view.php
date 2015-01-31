@@ -62,10 +62,6 @@ class View {
         $this->smarty->setTemplateDir(TPLDIR . '/' . $this->templateName);
         $this->smarty->setCompileDir(IFCDIR . '/cache');
 
-        $ref = new ReflectionClass($this);
-        $moduleName = basename(dirname($ref->getFileName()));
-        $this->setModuleName($moduleName);
-
         define('T_CSSURL',  MAINURL . '/tpl/' . $this->templateName . '/res/css' );
         define('T_JSURL',   MAINURL . '/tpl/' . $this->templateName . '/res/js' );
         define('T_IMGURL',  MAINURL . '/tpl/' . $this->templateName . '/res/img' );
