@@ -70,6 +70,7 @@ class homeControl extends Control {
      */
     public function notFound($url) {
 
+        $this->view()->setVariable('url', $url);
         $this->commitReplace($this->view()->get404(), 'body');
     }
 
@@ -86,9 +87,15 @@ class homeControl extends Control {
      */
     public function saveDbFile() {
 
-        $post = $this->getPost();
-        RestServer::validate($post, array('conname', 'host', 'user', 'pass', 'db'));
-        $this->model()->generateConnectionFile($post['conname'], $post['host'], $post['user'], $post['pass'], $post['db']);
-        $this->commitAdd('Created!', '#alert');
+        $this->validatePost('conname', 'host', 'user', 'pass', 'db') || $this->commitReplace('Please fill all information.', '#alert', false);
+
+        $this->model()->generateConnectionFile(
+            $this->getPost('conname'),
+            $this->getPost('host'),
+            $this->getPost('user'),
+            $this->getPost('pass'),
+            $this->getPost('db')
+        );
+        $this->commitReplace('Created!', '#alert');
     }
 }
