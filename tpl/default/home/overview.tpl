@@ -27,7 +27,7 @@
         <li>Multiple template support. Changing templates are simply change view's template name.</li>
         <li>Prefer twig? Add it in lib folder and replace the "include" in View class.</li>
     </ul>
-    <span>Let's create an encrypted database file <a class="btn btn-green" href="{$smarty.const.BASEDIR}home/createdb">click me!</a></span>
+    <span>Let's create an encrypted database connection file <a class="btn btn-green" href="{$smarty.const.BASEDIR}home/createdb">click me!</a></span>
     <span>Fork me: <a href="https://github.com/elvisdandrea/cerberus">https://github.com/elvisdandrea/cerberus</a></span>
     <div class="footer"><span>High quality software and over-engineering are two different things!</span></div>
 </div>
