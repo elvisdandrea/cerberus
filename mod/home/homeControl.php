@@ -21,6 +21,7 @@ class homeControl extends Control {
         parent::__construct();
     }
 
+
     /**
      * The home page
      *
@@ -78,6 +79,7 @@ class homeControl extends Control {
      * The view to create a database file
      */
     public function createDb() {
+
         $this->view()->loadTemplate('createdb');
         $this->commitReplace($this->view()->render(), '#main');
     }
@@ -87,7 +89,8 @@ class homeControl extends Control {
      */
     public function saveDbFile() {
 
-        $this->validatePost('conname', 'host', 'user', 'pass', 'db') || $this->commitReplace('Please fill all information.', '#alert', false);
+        $this->validatePost('conname', 'host', 'user', 'pass', 'db') ||
+            $this->commitReplace('Please fill all information.', '#alert', false);
 
         $this->model()->generateConnectionFile(
             $this->getPost('conname'),

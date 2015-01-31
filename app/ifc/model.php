@@ -445,8 +445,6 @@ class Model {
             'db'   => $database
         );
 
-        $name = $name;
-
         $data = json_encode($data);
         $data = CR::encrypt($data);
 

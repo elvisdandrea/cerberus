@@ -22,6 +22,7 @@ define('LIBDIR',    APPDIR  .   '/lib');
 define('TPLDIR',    MAINDIR .   '/tpl');
 define('MODDIR',    MAINDIR .   '/mod');
 
+define('RESURL',    MAINURL . '/res');
 define('CSSURL',    MAINURL . '/res/css');
 define('JSURL',     MAINURL . '/res/js');
 define('IMGURL',    MAINURL . '/res/img');

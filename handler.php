@@ -14,8 +14,10 @@
 
 /**
  * Error Message Level
+ *
+ * Remove E_ALL flag if you need
  */
-error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ERROR | E_PARSE | E_ALL);
 
 /**
  * Handler functions registration
@@ -44,6 +46,27 @@ function isLocal() {
     return (strpos($_SERVER['SERVER_ADDR'], '192.168') !== false || $_SERVER['HTTP_HOST'] == 'localhost');
 }
 
+/**
+ * Class Autoload Handler
+ *
+ * @param $class_name
+ */
+function autoLoad($class_name) {
+
+    $search = array(
+        MODDIR . '/' . CALL,
+        LIBDIR
+    );
+
+    foreach ($search as $dir) {
+        $file = $dir . '/' . $class_name . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
+    }
+}
+
 
 /**
  * Fatal Error Handler
@@ -61,8 +84,13 @@ function fatalErrorHandler(){
             E_COMPILE_ERROR
         ))
     ) return; ?>
+    <html>
+        <head>
+            <title>Cerberus - Do it simple and do it efficiently</title>
+        </head>
+    <body>
     <style>
-        body {
+        html {
             clear: both;
             background: url("<?php echo IMGURL . '/bg.jpg'; ?>") repeat scroll 0 0 rgba(0, 0, 0, 0);
             font-family: "Strait",sans-serif;
@@ -98,41 +126,22 @@ function fatalErrorHandler(){
             padding: 1.2em;
         }
     </style>
-    <div class="banner">
-        <h1>
-            <img src="<?php echo IMGURL . '/logo.png'; ?>" alt="cerberus_logo" width="90px"/>
-            Sorry, something went bad!</h1>
-        <div class="message">
-            <label>I know this is emarassing, but the server must be under maintenance. Please come back later.</label>
-            <?php if (ENVDEV == '0') exit; ?>
-            <label>
-                Error: <?php echo $error['type']; ?> <br>
-                Message: <?php echo $error['message']; ?> <br>
-                File: <?php echo $error['file']; ?> <br>
-                Line: <?php echo $error['line']; ?>
-            </label>
+        <div class="banner">
+            <h1>
+                <img src="<?php echo IMGURL . '/logo.png'; ?>" alt="cerberus_logo" width="90px"/>
+                Sorry, something went bad!</h1>
+            <div class="message">
+                <label>I know this is emarassing, but the server must be under maintenance. Please come back later.</label>
+                <?php if (ENVDEV == '0') exit; ?>
+                <label>
+                    Error: <?php echo $error['type']; ?> <br>
+                    Message: <?php echo $error['message']; ?> <br>
+                    File: <?php echo $error['file']; ?> <br>
+                    Line: <?php echo $error['line']; ?>
+                </label>
+            </div>
         </div>
-    </div>
-    <?php exit;
-}
-
-/**
- * Class Autoload Handler
- *
- * @param $class_name
- */
-function autoLoad($class_name) {
-
-    $search = array(
-        MODDIR . '/' . CALL,
-        LIBDIR
-    );
-
-    foreach ($search as $dir) {
-        $file = $dir . '/' . $class_name . '.php';
-        if (file_exists($file)) {
-            require_once $file;
-            return;
-        }
-    }
+    </body>
+    </html>
+    <?php
 }

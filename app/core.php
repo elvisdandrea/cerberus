@@ -48,7 +48,7 @@ class core {
 
         $action = $uri[1];
 
-        if (!method_exists($module, $action)) {
+        if (!method_exists($module, $action) || !is_callable(array($module, $action))) {
             if (!self::isAjax()) return;
 
             $notFoundAction = METHOD_NOT_FOUND;
