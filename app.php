@@ -3,8 +3,28 @@
 /**
  * App Configuration and Startup File
  *
- * @author:  Elvis D'Andrea
- * @email:  elvis.vista@gmail.com
+ * This is the begging of the magic.
+ *
+ * First things first: this will precisely guarantee that
+ * the system functionality is smooth independently where you place it.
+ *
+ * In other words: no hard-coded directories
+ * (no need for damn "composers", configuration xml/yml/wtf files or anything)
+ *
+ * Simply move your code, deploy, pull from git, whatever, and everything keeps
+ * working with no problem. URLs will be automatically identified and files will be
+ * automatically located and loaded. Everything works with no effort.
+ *
+ * The startup will then load the core class that handles the request.
+ * Everything goes straight to what's important and only what's important is loaded.
+ * It's fine tuned to do it simple and efficient, so it's not gonna rape the server like there's no tomorrow.
+ *
+ * It's also engineered to handle the server process automatically, so you just
+ * code your action without having to include/require any file, handle errors or
+ * create an over-engineered process that's for nothing other than create shitty stuff.
+ *
+ * @author: Elvis D'Andrea
+ * @email:  <elvis.vista@gmail.com>
  */
 
 /**
@@ -54,6 +74,9 @@ define('DEFAULT_CONNECTION', 'connection1');    // The default connection used b
  */
 require_once APPDIR . '/core.php';
 
+/**
+ * The main execution
+ */
 $core = new core();
 $core->execute();
 $core->terminate();

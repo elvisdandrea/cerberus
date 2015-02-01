@@ -1,10 +1,45 @@
 <?php
 
 /**
- * Class core
+ * Class core   - The System Core
  *
  * This class handles the active request
  *
+ * The Core is the framework router as well.
+ * There is no need to create any configuration file
+ * to handle the url routing, this will identify
+ * the module and action in the url and will
+ * automatically instance the necessary objects and
+ * call the action.
+ *
+ * There's also no need for hard-coded function names with damn
+ * WTFAction, the action may have any name.
+ *
+ * What if I need some function in the controller that
+ * should not be callable from url? Make a non-callable
+ * private function, so you can use in the controller,
+ * the core class automatically identifies it.
+ *
+ * So don't struggle! To create your module is just simple as:
+ *
+ * - Create a folder with your module name in /mod
+ * - Create a class named yourModuleControl that extends Control and is named yourClassControl.php
+ * - Create a class named yourModuleModel that extends Model and is named yourClassModel.php
+ * - Create a constructor in your classes that calls parent::__construct(); (you may add code in the constructor if you need)
+ * - Profit! It's ready! Just go coding!
+ *
+ * After that, for every public function you create in your controller you will have your action.
+ * The URL will be: http://yoursite.com/yourmodulename/yourfunctionname
+ *
+ * The URL is handled automatically. The content is handled automatically when it's not called via ajax.
+ * There will be no memory leak. The core does strict the necessary, straight forward to what's important.
+ * So there will be no shit load of "cache" php class with a lot of shit that goes raping the server like there's no tomorrow.
+ * Security, anti-injection, anti-header-overriding protection, everything is automatic.
+ * Modules, Libs and any class are loaded only if necessary, and you don't have to include/require anything.
+ * Error handling is automatic. You may create your throw events without worrying about coding an exception handler.
+ *
+ * @author  Elvis D'Anddrea
+ * @email   <elvis.vista@gmail.com>
  */
 class core {
 
