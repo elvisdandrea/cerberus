@@ -20,7 +20,7 @@
  * element. This guarantees a small javascript file with only the necessary.
  *
  * If this sounds blasphemy to you, remember that we want this to run
- * faster than the blink of an eye, so stop this bullshit to run everything on
+ * faster than the blink of an eye, so stop this bullshit of running everything on
  * the frontend, specially render HTML on frontend, because this requires double
  * processing (one on backend and other on frontend).
  *
@@ -152,9 +152,8 @@ class Control {
             return $this->post[$args[0]];
 
         $result = array();
-        foreach ($args as $arg) {
+        foreach ($args as $arg)
             !isset($this->post[$arg]) || $result[$arg] = $this->post[$arg];
-        }
 
         return $result;
     }
@@ -171,10 +170,10 @@ class Control {
 
         $args = func_get_args();
 
-        foreach ($args as $arg) {
+        foreach ($args as $arg)
             if (!isset($this->post[$arg]) || $this->post[$arg] == '')
                 return false;
-        }
+
         return true;
     }
 
@@ -195,21 +194,10 @@ class Control {
      * @return  mixed
      */
     protected function getQueryString($name = false) {
-        if ($name) {
+        if ($name)
             return (isset($this->get[$name]) ? $this->get[$name] : false);
-        }
+
         return $this->get;
-    }
-
-    /**
-     * Preventing Memory Leaks
-     */
-    protected function terminate() {
-
-        unset($this->view);
-        unset($this->model);
-        unset($this);
-        exit;
     }
 
     /**
@@ -233,11 +221,8 @@ class Control {
      * @param   bool        $stay   - If it should not finish execution after rendering
      */
     protected function commitReplace($html, $block, $stay = true) {
-        if (!Core::isAjax()) {
-            echo $html;
-        } else {
-            echo Html::ReplaceHtml($html, $block);
-        }
+
+        echo (!Core::isAjax() ? $html : Html::ReplaceHtml($html, $block));
         $stay || $this->terminate();;
     }
 
@@ -250,11 +235,8 @@ class Control {
      * @param   bool        $stay   - If it should not finish execution after rendering
      */
     protected function commitAdd($html, $block, $stay = true) {
-        if (!Core::isAjax()) {
-            echo $html;
-        } else {
-            echo Html::AddHtml($html, $block);
-        }
+
+        echo (!Core::isAjax() ? $html : Html::AddHtml($html, $block));
         $stay || $this->terminate();
     }
 
@@ -288,12 +270,22 @@ class Control {
      * @param   bool        $stay       - If it should not finish execution after rendering
      */
     protected function scrollToElement($element, $speed = '1000', $stay = true) {
-        if (Core::isAjax()) {
-            echo '$("html, body").animate({scrollTop: $("'.$element.'").offset().top}, ' . $speed . ');';
-            $stay || $this->terminate();
-        } else {
-            echo '<script>$("html, body").animate({scrollTop: $("'.$element.'").offset().top}, ' . $speed . ');</script>';
-        }
+        echo (!Core::isAjax() ?
+            '<script>$("html, body").animate({scrollTop: $("'.$element.'").offset().top}, ' . $speed . ');</script>' :
+            '$("html, body").animate({scrollTop: $("'.$element.'").offset().top}, ' . $speed . ');'
+        );
+        $stay || $this->terminate();
+    }
+
+    /**
+     * Preventing Memory Leaks
+     */
+    protected function terminate() {
+
+        unset($this->view);
+        unset($this->model);
+        unset($this);
+        exit;
     }
 
 }
