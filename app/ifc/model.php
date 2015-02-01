@@ -5,24 +5,15 @@
  *
  * Interface de manipulação de banco de dados
  *
- * As conexões ficam armazenadas no parâmetro $connections
+ * The connections will be stored in $connections parameter
  *
- * Para criar uma conexão a partir de arquivo, utiliza-se
- * a função loadConnectionFile(), este acessará a pasta
- * app/ifc/data e localizará um arquivo cujo nome é md5('nome_da_conexão')
+ * The encrypted connection files are stored in
+ * app/ifc/data and the file names are hashed
  *
- * Para criar uma conexão a partir de dados dinâmicos, utilize a
- * função createNewConnection()
+ * if you need a runtime connection, use createNewConnection()
  *
- * Os dados de conexão devem ser strings
- * criptografadas utilizando o módulo dev, acessando:
- *
- * http://localhost/raptor/dev/opendevtools
- *
- * O ambiente de desenvolvimento funciona apenas se estiver
- * definida a global ENVDEV em main.php. Para desativá-la,
- * comente a linha que define a global
- *
+ * @author  Elvis D'Andrea
+ * @email   <elvis.vista@gmail.com>
  */
 
 define('MODELDIR', IFCDIR . '/data');

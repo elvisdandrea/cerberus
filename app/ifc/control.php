@@ -5,6 +5,33 @@
  *
  * The App Controller Class
  *
+ * All you need to handle the request in the fundamental level.
+ * Every other super stuffs are libs and you can use as you need.
+ *
+ * This class will automatically instances Models and Views of
+ * you module by using reflection. In other words, you don't need
+ * to create properties in the module controller class for models
+ * and views.
+ *
+ * You can have as many models as you need, each of them using a different
+ * connection if necessary.
+ *
+ * You can have as many views as you need and render them in a specific
+ * element. This guarantees a small javascript file with only the necessary.
+ *
+ * If this sounds blasphemy to you, remember that we want this to run
+ * faster than the blink of an eye, so stop this bullshit to run everything on
+ * the frontend, specially render HTML on frontend, because this requires double
+ * processing (one on backend and other on frontend).
+ *
+ * We want to deliver the smallest of things, only the necessary,
+ * and something that will be parsed only once by browser.
+ * Also, the smaller the javascript, the faster the browser processes it.
+ *
+ * Keep in mind: every bit matters!
+ *
+ * @author  Elvis D'Andrea
+ * @email   <elvis.vista@gmail.com>
  */
 
 class Control {

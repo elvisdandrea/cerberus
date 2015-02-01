@@ -5,7 +5,7 @@
  *
  * Manipulation of System Directories and files
  */
-class filemanager {
+class FileManager {
 
     /**
      * Creates directories recursively

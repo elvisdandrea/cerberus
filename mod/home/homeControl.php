@@ -44,6 +44,12 @@ class homeControl extends Control {
      *
      * This is where the "magic" happens
      *
+     * Always drop a $page_content in your templates
+     * so this function can manage to put the content
+     * of the action when it's not an ajax request.
+     *
+     * Prefer a different variable name? Just rename it.
+     *
      * @param   array   $uri        - The URI array
      */
     public function itStarts($uri = array()) {
@@ -62,7 +68,7 @@ class homeControl extends Control {
         $this->view()->loadTemplate('home');
 
         /**
-         * A few use examples
+         * A few usage examples
          */
         #$this->view->appendJs('example');  // Example on appending module javascript files
         #$this->model()->queryExample(1);   // Example of a query (just remember that the default connection has no data yet)
@@ -76,6 +82,9 @@ class homeControl extends Control {
 
     /**
      * When returning the home page, loads the inner content only
+     *
+     * You can always create a modulePage function that
+     * is called when the module is called without an action.
      */
     public function homePage() {
 

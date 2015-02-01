@@ -5,6 +5,26 @@
  *
  * The template Renderer
  *
+ * This is using Smarty as renderer. There's a fork in which
+ * Twig is being tested. And no, just because everybody loves
+ * it doesn't mean it's better, it doesn't mean it's worse,
+ * it doesn't mean anything! People are dumb as fuck.
+ *
+ * What I do is science: I'm agnostic until I prove it.
+ * If it's proven right, I'll use it.
+ * If it's proven wrong, I'll throw it away like yesterday's newspaper.
+ *
+ * This renderer allows to easily manipulate the template variables
+ * and the template itself. To switch to a different template, all you
+ * need is change the name in the constructor or call setTemplateName()
+ *
+ * This view also creates the globals with the template locations.
+ * You can also add module javascript if necessary just by calling
+ * appendJs() and specify its name, the location is automatically
+ * identified.
+ *
+ * @author  Elvis D'Andrea
+ * @email   <elvis.vista@gmail.com>
  */
 class View {
 

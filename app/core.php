@@ -41,6 +41,7 @@
  * @author  Elvis D'Anddrea
  * @email   <elvis.vista@gmail.com>
  */
+
 class core {
 
     /**
@@ -70,6 +71,11 @@ class core {
 
     /**
      * Executes the Method called by URI
+     *
+     * If no module is called, then let's go home
+     * If the module is called as a folder, then
+     * it searches for a modulePage function that
+     * is supposed to be the hotpage of the module.
      *
      * @param   array       $uri        - The method class and method
      */
@@ -129,7 +135,7 @@ class core {
      */
     private static function requireHome() {
 
-        foreach (array('Model', 'Control') as $pos => $class)
+        foreach (array('Model', 'Control') as $class)
             require_once MODDIR . '/' . HOME . '/' .  HOME  . $class . '.php';
         $homeClass = HOME . 'Control';
         return new $homeClass();
@@ -167,7 +173,7 @@ class core {
     }
 
     /**
-     * Prevent Memory Leaks
+     * Prevent Memory Leaks of the core class
      */
     public function terminate() {
 
