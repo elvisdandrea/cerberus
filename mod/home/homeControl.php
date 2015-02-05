@@ -53,7 +53,7 @@ class homeControl extends Control {
      * @param   array   $uri        - The URI array
      */
     public function itStarts($uri = array()) {
-
+        debug('here');
         if (count($uri) > 0) {
             ob_start();
             Core::runMethod($uri);

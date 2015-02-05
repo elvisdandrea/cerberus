@@ -145,3 +145,84 @@ function fatalErrorHandler(){
     </html>
     <?php
 }
+
+/**
+ * Debugger Function
+ *
+ * To support a debug in any position of the code,
+ * this must be text-based
+ *
+ * @param $mixed
+ */
+function debug($mixed){
+    $call = debug_backtrace();
+    ?>
+    <html>
+    <head>
+        <title>Cerberus - Do it simple and do it efficiently</title>
+    </head>
+    <body>
+    <style>
+        html {
+            clear: both;
+            background: url("<?php echo IMGURL . '/bg.jpg'; ?>") repeat scroll 0 0 rgba(0, 0, 0, 0);
+            font-family: "Strait",sans-serif;
+        }
+
+        h1 {
+            clear: both;
+            color: #fff;
+            padding: 30px;
+            font-family: "Fjalla One",sans-serif;
+            font-size: 25px;
+            margin-top: 1px;
+            text-shadow: 6px 1px 6px #333;
+        }
+        label {
+            clear: both;
+            border: medium none;
+            color: #98af95;
+            font-family: "Strait",sans-serif;
+            font-size: 18px;
+            outline: medium none;
+            padding: 6px 30px 6px 6px;
+            margin: 0;
+            display: block;
+        }
+        .banner {
+            margin: 100px auto 0;
+            width: 50%;
+        }
+        .message {
+            background: none repeat scroll 0px 0px rgba(0, 0, 0, 0.25);
+            text-shadow: 6px 1px 6px #333;
+            padding: 1.2em;
+        }
+    </style>
+    <div class="banner">
+        <h1>
+            <img src="<?php echo IMGURL . '/logo.png'; ?>" alt="cerberus_logo" width="90px"/>
+            Cerberus - Debugging Code</h1>
+        <div class="message">
+            <label>
+                <?php
+                    print_r($mixed);
+                ?>
+            </label>
+            <label>
+                <?php foreach ($call as $action) : ?>
+                    <hr>
+                <ul>
+                    <li>File: <?php echo $action['file']; ?></li>
+                    <li>Line: <?php echo $action['line']; ?></li>
+                    <li>Class: <?php echo $action['class']; ?></li>
+                    <li>Function: <?php echo $action['function']; ?></li>
+                </ul>
+                <?php endforeach; ?>
+            </label>
+        </div>
+    </div>
+    </body>
+    </html>
+<?php exit;
+}

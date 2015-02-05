@@ -755,8 +755,11 @@ class Model {
      * INSERT statements (subqueries and stuff)
      *
      * @param   string      $special        - The special condition
+     * @param   string      $separator      - If we have a special character for separating this special
+     * @param   int         $offset         - If we must add the separator only after a certain offset
      */
-    protected function addInsertSpecials($special) {
+    protected function addInsertSpecials($special, $separator = '', $offset = 1) {
+        if (count($this->insertspecials) > $offset) $special = $separator . $special;
         $this->insertspecials[] = $special;
     }
 
