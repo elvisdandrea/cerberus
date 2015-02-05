@@ -178,7 +178,7 @@ class Model {
      *
      * @var string
      */
-    private $dbGridTemplate = 'dbGrid';
+    private $dbGridTemplate = 'ifc/dbGrid';
 
     /**
      * We always need a custom grid, where
@@ -288,6 +288,14 @@ class Model {
             'type'      => $type,
             'subtitle'  => $subtitle
         );
+    }
+
+    /**
+     * Clears previous column set
+     */
+    public function clearGridColumns() {
+
+        $this->dbGridColumns = array();
     }
 
     /**

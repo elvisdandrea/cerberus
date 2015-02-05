@@ -36,7 +36,7 @@ class String {
      */
     public static function ClearArray( $array ) {
         array_walk_recursive($array, function(&$item){
-            $item = self::ClearString($item);
+            $item = String::ClearString($item);
         });
         return $array;
     }
