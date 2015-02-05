@@ -250,7 +250,6 @@ class Model {
     public function __construct($connection = DEFAULT_CONNECTION) {
 
         $this->id = uniqid();
-        $this->loadConnectionFile($connection);
         $this->setConnection($connection);
     }
 
@@ -260,6 +259,7 @@ class Model {
      * @param   string      $name       - The connection name
      */
     public function setConnection($name) {
+        isset($this->connections[$name]) || $this->loadConnectionFile($name);
         $this->connection = $name;
     }
 

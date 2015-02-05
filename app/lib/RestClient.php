@@ -1,5 +1,5 @@
 <?php
-
+//TODO: The entire class is just on the beggining (format, security, etc..)
 /**
  * Class RestClient
  *

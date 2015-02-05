@@ -9,7 +9,7 @@
  * the system functionality is smooth independently where you place it.
  *
  * In other words: no hard-coded directories
- * (no need for damn "composers", configuration xml/yml/wtf files or anything)
+ * (no need for configuration xml/yml files or anything)
  *
  * Simply move your code, deploy, pull from git, whatever, and everything keeps
  * working with no problem. URLs will be automatically identified and files will be
