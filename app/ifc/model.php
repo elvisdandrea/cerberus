@@ -543,6 +543,7 @@ class Model {
      */
     protected function runDelete($safe = true) {
         $this->dataset = $this->Exec($this->getDeleteQuery($safe));
+        $this->clearDelete();
     }
 
     /**
@@ -553,6 +554,7 @@ class Model {
      */
     protected function runInsert($safe = true) {
         $this->dataset = $this->Exec($this->GetInsert($safe));
+        $this->clearInsert();
     }
 
     /**
@@ -563,6 +565,7 @@ class Model {
      */
     protected function runUpdate($safe = true) {
         $this->dataset = $this->Exec($this->getUpdateQuery($safe), true);
+        $this->clearUpdate();
     }
 
     /**
@@ -861,6 +864,33 @@ class Model {
         $this->group = array();
         $this->order = array();
         $this->limit = array();
+    }
+
+    /**
+     * Clears all INSERT clauses
+     */
+    protected function clearInsert() {
+        $this->insertset = array();
+        $this->inserttable = '';
+        $this->insertspecials = array();
+    }
+
+    /**
+     * Clears all UPDATE clauses
+     */
+    protected function clearUpdate() {
+        $this->updateset = array();
+        $this->updatetable = '';
+        $this->updatewhere = array();
+        $this->updatespecials = array();
+    }
+
+    /**
+     * Clears all UPDATE clauses
+     */
+    protected function clearDelete() {
+        $this->deletefrom = '';
+        $this->deletewhere = array();
     }
 
     /**
