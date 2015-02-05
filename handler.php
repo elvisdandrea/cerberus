@@ -3,7 +3,7 @@
  * App Handler File
  *
  * These functions will be called automatically
- * when an error event occurs.
+ * when an specific event occurs.
  * If a class is not defined and is called,
  * the handler will automatically include the
  * file containing the class name
@@ -15,7 +15,7 @@
 /**
  * Error Message Level
  *
- * Remove E_ALL flag if you need
+ * Remove E_ALL flag if you are a lazy fuck
  */
 error_reporting(E_ERROR | E_PARSE | E_ALL);
 
@@ -150,13 +150,18 @@ function fatalErrorHandler(){
  * Debugger Function
  *
  * To support a debug in any position of the code,
+ * regardless the possibility of a template engine,
  * this must be text-based
  *
  * @param $mixed
  */
 function debug($mixed){
     $call = debug_backtrace();
-    ?>
+    ob_start();
+
+    if (isAjax()) : ?>
+        Html.Replace('
+    <?php endif; ?>
     <html>
     <head>
         <title>Cerberus - Do it simple and do it efficiently</title>
@@ -205,11 +210,15 @@ function debug($mixed){
             Cerberus - Debugging Code</h1>
         <div class="message">
             <label>
+                <pre>
                 <?php
                     print_r($mixed);
                 ?>
+                    </pre>
             </label>
             <label>
+                <hr>
+                <label>Debug Trace:</label>
                 <?php foreach ($call as $action) : ?>
                     <hr>
                 <ul>
@@ -224,5 +233,11 @@ function debug($mixed){
     </div>
     </body>
     </html>
-<?php exit;
+    <?php if (isAjax()) : ?>
+        ', 'html');
+    <?php endif;
+    $result = ob_get_contents();
+    ob_clean();
+    echo preg_replace( '/\s+/', ' ', trim( $result ) );
+    exit;
 }

@@ -53,7 +53,6 @@ class homeControl extends Control {
      * @param   array   $uri        - The URI array
      */
     public function itStarts($uri = array()) {
-        debug('here');
         if (count($uri) > 0) {
             ob_start();
             Core::runMethod($uri);
@@ -76,6 +75,8 @@ class homeControl extends Control {
         #$this->newModel('example');                // Example of how to create a new model connected in a different database
         #$this->model('example')->queryExample();   // This time, the query on queryExample will be executed on the connection of the 'example' file
 
+        #debug($this->view()->getModuleName());     // Example of a code debug
+
         echo $this->view()->render();
         $this->terminate();
     }
@@ -87,7 +88,7 @@ class homeControl extends Control {
      * is called when the module is called without an action.
      */
     public function homePage() {
-
+        
         $this->view()->loadTemplate('overview');
         $this->commitReplace($this->view()->render(), '#main', true);
     }
