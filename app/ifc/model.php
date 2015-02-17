@@ -476,7 +476,7 @@ class Model {
 
         $this->connections[$name]['conn'] =
             new PDO(
-                'mysql:host=' . $this->connections[$name]['host'] . ';dbname=' . $this->connections[$name]['db'],
+                'mysql:host=' . $this->connections[$name]['host'] . ';dbname=' . $this->connections[$name]['db'] . ';charset=utf8',
                 $this->connections[$name]['user'],
                 $this->connections[$name]['pass']);
     }
@@ -487,7 +487,7 @@ class Model {
      * @param $result       - The PDO Query Result
      * @return array
      */
-    private function Mount($result) {
+    private function Mount(PDOStatement $result) {
         $obj = array();
         $row = 0;
         while ($res = $result->fetchObject()) {
@@ -520,7 +520,7 @@ class Model {
             throw new Exception($query . '<br>' . $info[2]);
         }
 
-        $dataset = $this->Mount($result);
+        $dataset = $result->fetchAll();
         if ($setUtf8) $this->connections[$this->connection]['conn']->prepare("SET NAMES 'latin1'")->execute();
         return $dataset;
     }

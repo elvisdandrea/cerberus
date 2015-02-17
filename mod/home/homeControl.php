@@ -88,7 +88,7 @@ class homeControl extends Control {
      * is called when the module is called without an action.
      */
     public function homePage() {
-        
+
         $this->view()->loadTemplate('overview');
         $this->commitReplace($this->view()->render(), '#main', true);
     }

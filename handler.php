@@ -15,7 +15,7 @@
 /**
  * Error Message Level
  *
- * Remove E_ALL flag if you are a lazy fuck
+ * Removing E_ALL is not recommended
  */
 error_reporting(E_ERROR | E_PARSE | E_ALL);
 
@@ -49,21 +49,19 @@ function isLocal() {
 /**
  * Class Autoload Handler
  *
- * @param $class_name
+ * @param   $class_name
+ * @return  mixed
  */
 function autoLoad($class_name) {
 
-    $search = array(
-        MODDIR . '/' . CALL,
-        LIBDIR
-    );
-
-    foreach ($search as $dir) {
+    foreach (array(
+                 MODDIR . '/' . CALL,
+                 LIBDIR
+             ) as $dir) {
         $file = $dir . '/' . $class_name . '.php';
-        if (file_exists($file)) {
-            require_once $file;
-            return;
-        }
+        if (file_exists($file))
+            return require_once $file;
+
     }
 }
 
@@ -71,8 +69,9 @@ function autoLoad($class_name) {
 /**
  * Fatal Error Handler
  *
- * To support all kind of errors, this must
- * be text-based instead of loading template files
+ * To support all kind of errors,
+ * regardless the possibility of a
+ * template engine, this must be text-based
  */
 function fatalErrorHandler(){
     $error = error_get_last();
@@ -154,8 +153,9 @@ function fatalErrorHandler(){
  * this must be text-based
  *
  * @param $mixed
+ * @param $element
  */
-function debug($mixed){
+function debug($mixed, $element = 'html'){
     $call = debug_backtrace();
     ob_start();
 
@@ -194,6 +194,9 @@ function debug($mixed){
             margin: 0;
             display: block;
         }
+        pre {
+            white-space: pre-line;
+        }
         .banner {
             margin: 100px auto 0;
             width: 50%;
@@ -211,9 +214,7 @@ function debug($mixed){
         <div class="message">
             <label>
                 <pre>
-                <?php
-                    print_r($mixed);
-                ?>
+                <?php print_r($mixed); ?>
                     </pre>
             </label>
             <label>
@@ -234,7 +235,7 @@ function debug($mixed){
     </body>
     </html>
     <?php if (isAjax()) : ?>
-        ', 'html');
+        ', '<?php echo $element; ?>');
     <?php endif;
     $result = ob_get_contents();
     ob_clean();
