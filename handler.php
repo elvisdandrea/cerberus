@@ -194,9 +194,6 @@ function debug($mixed, $element = 'html'){
             margin: 0;
             display: block;
         }
-        pre {
-            white-space: pre-line;
-        }
         .banner {
             margin: 100px auto 0;
             width: 50%;
@@ -213,8 +210,7 @@ function debug($mixed, $element = 'html'){
             Cerberus - Debugging Code</h1>
         <div class="message">
             <label>
-                <pre>
-                <?php print_r($mixed); ?>
+                <pre><?php print_r($mixed); ?>
                     </pre>
             </label>
             <label>
@@ -239,6 +235,7 @@ function debug($mixed, $element = 'html'){
     <?php endif;
     $result = ob_get_contents();
     ob_clean();
-    echo preg_replace( '/\s+/', ' ', trim( $result ) );
+    !isAjax() || $result = preg_replace( '/\n+/', '\'' . "\n" . '+"\\n"' . '+\'', trim( $result ) );
+    echo $result;
     exit;
 }
