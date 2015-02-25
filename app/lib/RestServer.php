@@ -37,6 +37,7 @@ class RestServer {
      * Used for security features
      */
     public static function throw404() {
+        //TODO: Usage of ExceptionHandler Class
         header('HTTP/1.0 404 Not Found');
         exit;
     }
@@ -52,7 +53,7 @@ class RestServer {
      */
     public static function throwError($message) {
 
-        //TODO: handle other formats
+        //TODO: Usage of ExceptionHandler class
         http_response_code(400);
         header('Content-type: application/json');
 
@@ -73,7 +74,7 @@ class RestServer {
      */
     public static function response(array $data) {
 
-        //TODO: handle other formats
+        //TODO: A response method
         http_response_code(200);
         header('Content-type: application/json');
 

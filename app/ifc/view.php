@@ -6,13 +6,7 @@
  * The template Renderer
  *
  * This is using Smarty as renderer. There's a fork in which
- * Twig is being tested. And no, just because everybody loves
- * it doesn't mean it's better, it doesn't mean it's worse,
- * it doesn't mean anything! People are dumb as fuck.
- *
- * What I do is science: I'm agnostic until I prove it.
- * If it's proven right, I'll use it.
- * If it's proven wrong, I'll throw it away like yesterday's newspaper.
+ * Twig is being tested.
  *
  * This renderer allows to easily manipulate the template variables
  * and the template itself. To switch to a different template, all you
@@ -82,15 +76,15 @@ class View {
         $this->smarty->setTemplateDir(TPLDIR . '/' . $this->templateName);
         $this->smarty->setCompileDir(IFCDIR . '/cache');
 
-        define('T_CSSURL',  MAINURL . '/tpl/' . $this->templateName . '/res/css' );
-        define('T_JSURL',   MAINURL . '/tpl/' . $this->templateName . '/res/js' );
-        define('T_IMGURL',  MAINURL . '/tpl/' . $this->templateName . '/res/img' );
-        define('T_FONTURL', MAINURL . '/tpl/' . $this->templateName . '/res/fonts' );
+        defined('T_CSSURL')  || define('T_CSSURL',  MAINURL . '/tpl/' . $this->templateName . '/res/css' );
+        defined('T_JSURL')   || define('T_JSURL',   MAINURL . '/tpl/' . $this->templateName . '/res/js' );
+        defined('T_IMGURL')  || define('T_IMGURL',  MAINURL . '/tpl/' . $this->templateName . '/res/img' );
+        defined('T_FONTURL') || define('T_FONTURL', MAINURL . '/tpl/' . $this->templateName . '/res/fonts' );
 
-        define('T_CSSDIR',  MAINDIR . '/tpl/' . $this->templateName . '/res/css' );
-        define('T_JSDIR',   MAINDIR . '/tpl/' . $this->templateName . '/res/js' );
-        define('T_IMGDIR',  MAINDIR . '/tpl/' . $this->templateName . '/res/img' );
-        define('T_FONTDIR', MAINDIR . '/tpl/' . $this->templateName . '/res/fonts' );
+        defined('T_CSSDIR')  || define('T_CSSDIR',  MAINDIR . '/tpl/' . $this->templateName . '/res/css' );
+        defined('T_JSDIR')   || define('T_JSDIR',   MAINDIR . '/tpl/' . $this->templateName . '/res/js' );
+        defined('T_IMGDIR')  || define('T_IMGDIR',  MAINDIR . '/tpl/' . $this->templateName . '/res/img' );
+        defined('T_FONTDIR') || define('T_FONTDIR', MAINDIR . '/tpl/' . $this->templateName . '/res/fonts' );
 
     }
 
@@ -163,7 +157,6 @@ class View {
 
         if ($this->moduleName != '')
             $name = $this->moduleName . '/' . $name;
-
         return is_file(TPLDIR . '/' . $this->templateName . '/' . $name . '.tpl');
     }
 
@@ -197,11 +190,13 @@ class View {
     /**
      * Renders a template
      *
-     * @return string
+     * @param   bool        $fetch      - Just return the html instead of rendering directly on screen
+     * @return  string
      */
-    public function render() {
+    public function render($fetch = true) {
 
-        return $this->smarty->fetch($this->template) . (count($this->jsFiles) > 0 ? $this->injectJSFiles() : '');
+        $method = $fetch ? 'fetch' : 'display';
+        return $this->smarty->$method($this->template) . (count($this->jsFiles) > 0 ? $this->injectJSFiles() : '');
     }
 
     /**

@@ -38,6 +38,7 @@ define('BASEDIR',     (dirname($_SERVER['PHP_SELF']) != '/' ? dirname($_SERVER['
 define('MAINDIR',   __DIR__);
 define('APPDIR',    MAINDIR .   '/app');
 define('IFCDIR',    APPDIR  .   '/ifc');
+define('KRNDIR',    APPDIR  .   '/krn');
 define('LIBDIR',    APPDIR  .   '/lib');
 define('TPLDIR',    MAINDIR .   '/tpl');
 define('MODDIR',    MAINDIR .   '/mod');
@@ -48,10 +49,14 @@ define('JSURL',     MAINURL . '/res/js');
 define('IMGURL',    MAINURL . '/res/img');
 
 /**
+ * Register Core Class
+ */
+require_once APPDIR . '/core.php';
+
+/**
  * Register Handler Functions
  */
 require_once MAINDIR . '/handler.php';
-
 
 /**
  * Some configuration
@@ -59,7 +64,7 @@ require_once MAINDIR . '/handler.php';
 define('HOME', 'home');                 // Home Sweet Home
 define('LNG', 'pt');                    // Site Language
 
-(isLocal() ? define('ENVDEV', '1') :    // An elegant way of preventing ENVDEV = 1 on deploy
+(Core::isLocal() ? define('ENVDEV', '1') :    // An elegant way of preventing ENVDEV = 1 on deploy
     define('ENVDEV', '0'));             // Development Enviroment
 
 define('RESTFUL', '0');                         // If attends to ReSTful requests
@@ -69,10 +74,6 @@ define('ENCRYPT_POST_DATA', '0');               // If it should encrypt data sen
 define('METHOD_NOT_FOUND', 'notFound');         // What to call when a method is not found
 define('DEFAULT_CONNECTION', 'connection1');    // The default connection used by models
 
-/**
- * Register Core Class
- */
-require_once APPDIR . '/core.php';
 
 /**
  * The main execution

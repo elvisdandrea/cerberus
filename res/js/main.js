@@ -58,7 +58,7 @@ Main.prototype = {
             if ($(this).attr('action') == undefined) return false;
 
             data = [];
-            $(this).find('input[type="hidden"][name],input[type][name],select[name],textarea[name]').each(function(){
+            $(this).find('input[type="hidden"][name],input[type][name]:not("[type=password]"),select[name],textarea[name]').each(function(){
                 data.push($(this).attr('name')+'='+encodeURIComponent($(this).val()));
             });
             $(this).find('input[type="password"]').each(function(){

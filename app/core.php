@@ -53,12 +53,12 @@ class core {
      */
     private function loadUrl(){
 
-        $url = $_SERVER['REQUEST_URI'];
+        $uri = $_SERVER['REQUEST_URI'];
 
         if (ENCRYPTURL == '1')
-            $url = CR::decrypt($url);
+            $uri = CR::decrypt($uri);
 
-        $uri = str_replace(BASEDIR,'', $url);
+        BASEDIR == '/' || $uri = str_replace(BASEDIR,'', $uri);
         $uri = explode('/', $uri);
 
         array_walk($uri, function(&$item){
@@ -83,9 +83,8 @@ class core {
 
         if (count($uri) < 1 || $uri[0] == '') return;
 
-        define('CALL', $uri[0]);
         $module = $uri[0].'Control';
-        if ($uri[1] == '') $uri[1] = $uri[0] . 'Page';
+        if (!isset($uri[1]) || $uri[1] == '') $uri[1] = $uri[0] . 'Page';
 
         $action = $uri[1];
 
@@ -128,6 +127,15 @@ class core {
      */
     public static function isAjax() {
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+    }
+
+    /**
+     * Is it running localhost server or prod server?
+     *
+     * @return bool
+     */
+    public static function isLocal() {
+        return (strpos($_SERVER['SERVER_ADDR'], '192.168') !== false || $_SERVER['HTTP_HOST'] == 'localhost');
     }
 
     /**

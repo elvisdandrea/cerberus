@@ -26,7 +26,7 @@ class Html {
      */
     public static function AddHtml($html, $block) {
 
-        return 'Html.Add(\'' . String::RemoveNewLines(String::AddSQSlashes($html)) . '\',\'' . $block . '\');';
+        return 'Html.Add(\'' . String::BuildStringNewLines(String::AddSQSlashes($html)) . '\',\'' . $block . '\');';
     }
 
     /**
@@ -39,7 +39,7 @@ class Html {
      */
     public static function ReplaceHtml($html, $block) {
 
-        return 'Html.Replace(\'' . String::RemoveNewLines(String::AddSQSlashes($html)) . '\',\'' . $block . '\');';
+        return 'Html.Replace(\'' . String::BuildStringNewLines(String::AddSQSlashes($html)) . '\',\'' . $block . '\');';
     }
 
     /**
@@ -81,6 +81,15 @@ class Html {
      */
     public static function AsyncLoadList($id) {
         return 'Html.AsyncLoadList(\'' . $id . '\');';
+    }
+
+    /**
+     * Refreshes Current Page
+     */
+    public static function refresh() {
+
+        echo 'window.location.href = "' . $_SERVER['HTTP_REFERER'] . '"';
+        exit;
     }
 
     /**
@@ -152,10 +161,7 @@ class Html {
             }
         }
         if (!empty($session)) {
-            eval('$value = $_SESSION' . $session . ';');
-            if (unserialize($value) !== false) {
-                $value = unserialize($value);
-            }
+            eval('$value = ""; !isset($_SESSION' . $session . ') || $value = $_SESSION' . $session . ';');
         }
         return $value;
     }

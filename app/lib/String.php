@@ -52,6 +52,18 @@ class String {
     }
 
     /**
+     * Concatenates each line of a string into slashes
+     * and a concatenation character
+     *
+     * @param   string    $string           - The original string
+     * @param   string    $concat_char      - The concatenation character
+     * @return  string                      - The converted string
+     */
+    public static function BuildStringNewLines( $string, $concat_char = '+' ) {
+        return preg_replace( '/\n+/', '\'' . "\n" . $concat_char .'"\\n"' . $concat_char . '\'', trim( $string ));
+    }
+
+    /**
      * An "addslashes" for single quotes only
      *
      * @param   string      $string     - The original string

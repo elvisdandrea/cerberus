@@ -77,6 +77,10 @@ class homeControl extends Control {
 
         #debug($this->view()->getModuleName());     // Example of a code debug
 
+        #throw new ExceptionHandler('teste', 400);  // Example of Exception Handling
+        #$this->view('')->lol();                    // Example of Fatal Error Handling
+
+
         echo $this->view()->render();
         $this->terminate();
     }

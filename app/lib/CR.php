@@ -47,6 +47,7 @@ class CR {
      */
     public static function decrypt($str)
     {
+        if ($str == '') return false;
         $str = substr($str, 1);
         $str = explode('$', $str);
         $pass = $str[0];
