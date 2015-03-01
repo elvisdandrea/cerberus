@@ -3,10 +3,9 @@
 /**
  * Class HighCharts (Unfinished)
  *
- * Class for manipulating HighCharts
+ * Class for manipulating HighChart graphics
  *
  */
-
 
 class HighCharts {
 

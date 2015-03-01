@@ -23,32 +23,13 @@ error_reporting(E_ERROR | E_PARSE | E_ALL);
 /**
  * Handler functions registration
  */
-
-spl_autoload_register('autoLoad');
+require_once KRNDIR . '/AutoloadHandler.php';
+spl_autoload_register(array('AutoloadHandler', 'autoLoad'));
 set_error_handler(array('ExceptionHandler','ExceptionListener'));
 set_exception_handler(array('ExceptionHandler','ExceptionListener'));
 register_shutdown_function(array('ExceptionHandler','FatalExceptionListener'));
 session_start();
 
-/**
- * Class Autoload Handler
- *
- * @param   $class_name
- * @return  mixed
- */
-function autoLoad($class_name) {
-
-    foreach (array(
-                 MODDIR . '/' . preg_replace('/Control|Model$/','',$class_name),
-                 LIBDIR,
-                 KRNDIR
-             ) as $dir) {
-        $file = $dir . '/' . $class_name . '.php';
-        if (file_exists($file))
-            return require_once $file;
-
-    }
-}
 
 /**
  * Debugger Function

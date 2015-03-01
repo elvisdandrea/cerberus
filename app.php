@@ -64,8 +64,8 @@ require_once MAINDIR . '/handler.php';
 define('HOME', 'home');                 // Home Sweet Home
 define('LNG', 'pt');                    // Site Language
 
-(Core::isLocal() ? define('ENVDEV', '1') :    // An elegant way of preventing ENVDEV = 1 on deploy
-    define('ENVDEV', '0'));             // Development Enviroment
+(Core::isLocal() ? define('ENVDEV', '1') :      // An elegant way of preventing ENVDEV = 1 on deploy
+    define('ENVDEV', '0'));                     // Development Enviroment
 
 define('RESTFUL', '0');                         // If attends to ReSTful requests
 define('RESTFORMAT', 'json');                   // If ReSTful, which format we're working

@@ -5,8 +5,21 @@
  *
  * The ReSTful interpretation of methods
  * to easily handle requests
+ *
+ * (it's under tests the advantage of
+ * handling it using static functions)
  */
 class RestServer {
+
+    /**
+     * The list of valid types
+     *
+     * @var array
+     */
+    private static $validMimeTypes = array(
+        'json'  => 'application/json',
+        'xml'   => 'application/xml'
+    );
 
     /**
      * Authenticate?
@@ -16,7 +29,56 @@ class RestServer {
      */
     public static function authenticate() {
 
-        //TODO: ReSTful Authentication method
+        //TODO: ReSTful OAuth2 Authentication method
+    }
+
+    /**
+     * Sets a response header
+     *
+     * @param   string      $header     - The header name
+     * @param   string      $value      - The header value
+     */
+    public function setHeader($header, $value) {
+
+        header($header . ': ' . $value);
+    }
+
+    /**
+     * Sets the content type format and acceptable formats
+     *
+     * @param   string              $format             - The format (so far: json | xml )
+     * @param   bool                $acceptFormatOnly   - If it must add Accept Header
+     * @throws  ExceptionHandler
+     */
+    public function setFormat($format, $acceptFormatOnly = false) {
+
+        if (!isset(self::$validMimeTypes[$format]))
+            throw new ExceptionHandler('The server has an invalid configuration (invalid mime for ' . $format . ')', 502);
+
+        self::setHeader('Content-type', self::$validMimeTypes[$format]);
+        $acceptFormatOnly || self::acceptableHeaders(array(self::$validMimeTypes[$format]));
+
+    }
+
+    /**
+     * Sets the response code
+     *
+     * @param   int     $code       - The response HTTP code
+     */
+    public function setResponseCode($code) {
+
+        http_response_code($code);
+    }
+
+    /**
+     * Adds Accept headers
+     *
+     * @param   array   $acceptables    - An array with the list of acceptable mime types
+     */
+    public function acceptableHeaders(array $acceptables) {
+
+        foreach ($acceptables as $acceptable)
+            self::setHeader('Accept', $acceptable);
     }
 
     /**
@@ -33,13 +95,10 @@ class RestServer {
 
     /**
      * Throws a 404 Error
-     *
-     * Used for security features
      */
     public static function throw404() {
-        //TODO: Usage of ExceptionHandler Class
-        header('HTTP/1.0 404 Not Found');
-        exit;
+
+        throw new ExceptionHandler('Resource not found', 404);
     }
 
     /**
@@ -49,21 +108,18 @@ class RestServer {
      * throwing a json (or desired ReST format) with status 400 is a good concept
      *
      * @param   string      $message        - A mensagem de texto
-     * @throws  Exception
+     * @param   int         $status         - THe error status
+     * @throws  ExceptionHandler
      */
-    public static function throwError($message) {
-
-        //TODO: Usage of ExceptionHandler class
-        http_response_code(400);
-        header('Content-type: application/json');
+    public static function throwError($message, $status = 400) {
 
         $response = array(
-            'status'        => 400,
+            'status'        => $status,
             'message'       => $message
         );
 
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
+        throw new ExceptionHandler(json_encode($response, JSON_UNESCAPED_UNICODE), $status);
+
     }
 
     /**
@@ -72,12 +128,11 @@ class RestServer {
      * @param   array   $data       - Array com os dados da resposta
      * @throws  Exception
      */
-    public static function response(array $data) {
+    public static function response(array $data, $statusCode = 200) {
 
-        //TODO: A response method
-        http_response_code(200);
-        header('Content-type: application/json');
+        self::setResponseCode($statusCode);
 
+        //TODO: The response rendering
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
         exit;
     }
