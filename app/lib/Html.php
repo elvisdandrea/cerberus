@@ -96,6 +96,8 @@ class Html {
      * A static function to statically get
      * a POST value when not in controllers
      *
+     * Not Recommended, really
+     *
      * @param   string      $name       - The field name in the POST
      * @return  bool
      */

@@ -98,6 +98,19 @@ class homeControl extends Control {
     }
 
     /**
+     * RESTful GET call example
+     */
+    public function getHome() {
+
+        $result = array(
+            'execution'     => 'Hooray, green test!',
+            'working_id'    => $this->getId()
+        );
+
+        return $result;
+    }
+
+    /**
      * When an ajax Method is not found
      *
      * @param   array       $url        - The URL in case you need

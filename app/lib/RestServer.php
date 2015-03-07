@@ -32,13 +32,37 @@ class RestServer {
         //TODO: ReSTful OAuth2 Authentication method
     }
 
+    public static function runRestMethod($uri) {
+        
+        self::authenticate();
+        if (count($uri) < 1 || $uri[0] == '')
+            throw new ExceptionHandler(Language::REST_NO_METHOD(), 400);
+
+        $request_method = strtolower($_SERVER['REQUEST_METHOD']);
+
+        if (!isset($uri[1]) || $uri[1] == '' || intval($uri[1]) > 0) $action = $request_method . $uri[0];
+        else $action = $request_method . $uri[1];
+
+        $module = $uri[0].'Control';
+
+        if (!method_exists($module, $action) || !is_callable(array($module, $action)))
+            throw new ExceptionHandler(Language::METHOD_NOT_FOUND(intval($uri[1]) > 0 ? $uri[0] : $uri[1], $request_method), 404);
+
+        $control = new $module;
+        !intval($uri[1]) > 0 || $control->setId($uri[1]);
+
+        $result = $control->$action();
+        self::response($result);
+        self::terminate();
+    }
+
     /**
      * Sets a response header
      *
      * @param   string      $header     - The header name
      * @param   string      $value      - The header value
      */
-    public function setHeader($header, $value) {
+    public static function setHeader($header, $value) {
 
         header($header . ': ' . $value);
     }
@@ -50,7 +74,7 @@ class RestServer {
      * @param   bool                $acceptFormatOnly   - If it must add Accept Header
      * @throws  ExceptionHandler
      */
-    public function setFormat($format, $acceptFormatOnly = false) {
+    public static function setFormat($format, $acceptFormatOnly = false) {
 
         if (!isset(self::$validMimeTypes[$format]))
             throw new ExceptionHandler('The server has an invalid configuration (invalid mime for ' . $format . ')', 502);
@@ -65,7 +89,7 @@ class RestServer {
      *
      * @param   int     $code       - The response HTTP code
      */
-    public function setResponseCode($code) {
+    public static function setResponseCode($code) {
 
         http_response_code($code);
     }
@@ -75,7 +99,7 @@ class RestServer {
      *
      * @param   array   $acceptables    - An array with the list of acceptable mime types
      */
-    public function acceptableHeaders(array $acceptables) {
+    public static function acceptableHeaders(array $acceptables) {
 
         foreach ($acceptables as $acceptable)
             self::setHeader('Accept', $acceptable);
@@ -131,9 +155,16 @@ class RestServer {
     public static function response(array $data, $statusCode = 200) {
 
         self::setResponseCode($statusCode);
-
-        //TODO: The response rendering
+        self::setFormat('json', true);
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * ReSTful Termination Process
+     *
+     */
+    public static function terminate() {
+        //TODO: termination process
         exit;
     }
 

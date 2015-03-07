@@ -37,6 +37,14 @@
 class Control {
 
     /**
+     * When in RESTful server, the id
+     * being manipulated
+     *
+     * @var
+     */
+    private $id = 0;
+
+    /**
      * Thou shalt not call superglobals directly
      *
      * @var
@@ -156,6 +164,26 @@ class Control {
             !isset($this->post[$arg]) || $result[$arg] = $this->post[$arg];
 
         return $result;
+    }
+
+    /**
+     * Sets the Working ID
+     *
+     * @param $id
+     */
+    public function setId($id) {
+
+        $this->id = $id;
+    }
+
+    /**
+     * Returns the current working ID
+     *
+     * @return int
+     */
+    public function getId() {
+
+        return $this->id;
     }
 
     /**

@@ -51,7 +51,7 @@ class core {
      *
      * @return  array|mixed
      */
-    private function loadUrl(){
+    private static function loadUrl(){
 
         $uri = $_SERVER['REQUEST_URI'];
 
@@ -67,6 +67,16 @@ class core {
         });
 
         return $uri;
+    }
+
+    /**
+     * Returns the called URI
+     *
+     * @return array|mixed
+     */
+    public static function getURI() {
+
+        return self::loadUrl();
     }
 
     /**
@@ -160,14 +170,21 @@ class core {
      */
     public function execute() {
 
-        $uri = $this->loadUrl();
-        String::arrayTrimNumericIndexed($uri);
-
-        if (RESTFUL == '1')
-            RestServer::authenticate();
+        $uri = $this->loadUrl();                    // Loads the called URL
+        String::arrayTrimNumericIndexed($uri);      // Trim the URL array indexes
 
         /**
-         * Going Home
+         * When server is running as a RESTful server
+         */
+        if (RESTFUL == '1')  {
+            RestServer::runRestMethod($uri);
+            $this->terminate();
+        }
+
+        /**
+         * When the request is not running over ajax,
+         * then call the home for full page rendering
+         * before calling the requested method
          */
         if (!$this->isAjax()) {
 
@@ -176,6 +193,9 @@ class core {
             $this->terminate();
         }
 
+        /**
+         * Normal Ajax Request, call the method only
+         */
         $this->runMethod($uri);
         $this->terminate();
     }

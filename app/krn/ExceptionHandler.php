@@ -19,18 +19,23 @@ Class ExceptionHandler extends Exception {
      * @param   string    $message      - The error message
      * @param   int       $status       - The status code
      */
-    public function __construct($message, $status = 400) {
+    public function __construct($message, $status = 500) {
 
         http_response_code($status);
+        !($status == 500 && ENVDEV == '1') || $message = Language::FATAL_ERROR_MESSAGE();   // Preventing internal errors to be displayed on production server
         ini_set('display_errors', '0');
         $error = array(
             'message'   => $message,
-            'status'    => $this->getCode(),
-            'file'      => $this->getFile(),
-            'line'      => $this->getLine()
+            'status'    => $status
         );
-        $this->throwException($error);
-        return parent::__construct($message, $status);
+
+        if (ENVDEV == '1') {
+            $error['file'] = $this->getFile();
+            $error['line'] = $this->getLine();
+        }
+        RESTFUL == '0' || RestServer::setFormat('json');
+        $error = RESTFUL == '0' ? $this->throwException($error) : $this->throwRestException($error);
+        return parent::__construct($error, $status);
 
     }
 
@@ -42,13 +47,18 @@ Class ExceptionHandler extends Exception {
      * the default error handler
      *
      * @return  string      - the thrown error
+     * @throws  ExceptionHandler
      */
     public static function ExceptionListener() {
 
         $error = error_get_last();
+        ENVDEV == '1' || $error['message'] = Language::FATAL_ERROR_MESSAGE();   // Preventing internal errors to be displayed on production server
         if (in_array($error['type'],
             array(E_CORE_ERROR, E_ERROR, E_PARSE, E_COMPILE_ERROR, E_ALL)))
-        return self::throwException($error);
+                return
+                    RESTFUL == '0' ?
+                    self::throwException($error, 500) : self::throwRestException($error);
+
 
     }
 
@@ -59,13 +69,21 @@ Class ExceptionHandler extends Exception {
      * and must be set as the shutdown function
      *
      * @return  string      - The thrown error
+     * @throws  ExceptionHandler
      */
     public static function FatalExceptionListener() {
 
         $error = error_get_last();
+        ENVDEV == '1' || $error['message'] = Language::FATAL_ERROR_MESSAGE();   // Preventing internal errors to be displayed on production server
         if (in_array($error['type'],
             array(E_PARSE, E_COMPILE_ERROR, E_CORE_ERROR, E_ERROR, E_PARSE, E_COMPILE_ERROR)))
-            return self::throwException($error);
+                if (RESTFUL == '0') {
+                    self::throwException($error, 500);
+                } else {
+                    header('Content-type: application/json');
+                    self::throwRestException($error);
+                }
+
 
     }
 
@@ -97,6 +115,19 @@ Class ExceptionHandler extends Exception {
 
         return $view->render(false);
 
+    }
+
+    /**
+     * Returns the error JSON when server
+     * is running RESTful requests
+     *
+     * @param array $error
+     * @return string
+     */
+    private function throwRestException(array $error) {
+
+        echo json_encode($error, JSON_UNESCAPED_UNICODE);
+        RestServer::terminate();
     }
 
 }
