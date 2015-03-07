@@ -102,6 +102,11 @@ class homeControl extends Control {
      */
     public function getHome() {
 
+        #debug($this->view()->getModuleName());     // Example of a code debug
+
+        #throw new ExceptionHandler('teste', 400);  // Example of Exception Handling
+        #$this->view('')->lol();                    // Example of Fatal Error Handling
+
         $result = array(
             'execution'     => 'Hooray, green test!',
             'working_id'    => $this->getId()

@@ -45,6 +45,17 @@ class Control {
     private $id = 0;
 
     /**
+     * The authenticated user data
+     *
+     * @var array
+     */
+    private $uid = array(
+        'token'         => '',
+        'refresh_token' => '',
+        'id'            => ''
+    );
+
+    /**
      * Thou shalt not call superglobals directly
      *
      * @var
@@ -184,6 +195,21 @@ class Control {
     public function getId() {
 
         return $this->id;
+    }
+
+    /**
+     * Sets the current UID
+     *
+     * @param   string  $token              - The current working token
+     * @param   string  $refresh_token      - The token for refreshing authentication
+     * @param   int     $id                 - The current user ID
+     */
+    public function setUID($token, $refresh_token, $id) {
+        $this->uid = array(
+            'token'             => $token,
+            'refresh_token'     => $refresh_token,
+            'id'                => $id
+        );
     }
 
     /**

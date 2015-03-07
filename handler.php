@@ -24,7 +24,6 @@ error_reporting(E_ERROR | E_PARSE | E_ALL);
  * Handler functions registration
  */
 require_once                KRNDIR . '/AutoloadHandler.php';                        // Call the AutoLoader
-require_once                KRNDIR . '/Language.php';                               // Multi-Language kernel translation
 spl_autoload_register       (array('AutoloadHandler', 'autoLoad'));                 // Register the autoload handler
 set_error_handler           (array('ExceptionHandler','ExceptionListener'));        // Register the Error Handler
 set_exception_handler       (array('ExceptionHandler','ExceptionListener'));        // Register the User Exception Handler

@@ -32,8 +32,14 @@ class RestServer {
         //TODO: ReSTful OAuth2 Authentication method
     }
 
-    public static function runRestMethod($uri) {
-        
+    /**
+     * Executes The RESTful Method
+     *
+     * @param  array    $uri        - The method URI
+     * @throws ExceptionHandler
+     */
+    public static function runRestMethod(array $uri) {
+
         self::authenticate();
         if (count($uri) < 1 || $uri[0] == '')
             throw new ExceptionHandler(Language::REST_NO_METHOD(), 400);
