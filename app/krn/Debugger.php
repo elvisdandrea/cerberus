@@ -4,6 +4,8 @@ class Debugger {
 
     public static function debug($mixed, $element = 'html') {
 
+        //TODO: RESTful debug
+
         $trace = debug_backtrace();
         $view = new View();
         $view->setModuleName('krn');
