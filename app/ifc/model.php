@@ -171,6 +171,18 @@ class Model {
     public $dataset = array();
 
     /**
+     * The error code of the last query
+     *
+     * It's 0 when no error occurred
+     *
+     * @var
+     */
+    private $errorInfo = array(
+        'code'      => 0,
+        'message'   => ''
+    );
+
+    /**
      * The Result of a
      * query can be displayed in a grid
      *
@@ -503,25 +515,21 @@ class Model {
      * Executes a Query
      *
      * @param   string  $query          - Query string
-     * @param   bool    $setUtf8        - Executes SET NAMES 'utf-8' before running a query (recommended for insert/update)
      * @return  array
-     * @throws  Exception               - Only when on Dev Enviroment
+     * @throws  Exception               - Only when on Dev Environment
      */
-    private function Exec($query, $setUtf8 = false) {
+    private function Exec($query) {
         $this->connect($this->connection);
-        if ($setUtf8) $this->connections[$this->connection]['conn']->prepare("SET NAMES 'utf8'")->execute();
         $result = $this->connections[$this->connection]['conn']->prepare($query);
         $result->execute();
         $info = $result->errorInfo();
+        $this->errorInfo = array(
+            'code'      => intval($info[0]),
+            'message'   => $info[2]
+        );
 
-        $this->result = $info[2] == '';
-
-        if (!$this->result && ENVDEV == 1) {
-            throw new Exception($query . '<br>' . $info[2]);
-        }
-
+        $this->result = $this->errorInfo['code'] == 0;
         $dataset = $result->fetchAll();
-        if ($setUtf8) $this->connections[$this->connection]['conn']->prepare("SET NAMES 'latin1'")->execute();
         return $dataset;
     }
 
@@ -552,8 +560,8 @@ class Model {
      *
      * @param   bool    $safe       - Safe Insert: will not run if there's no WHERE clause
      */
-    protected function runInsert($safe = true) {
-        $this->dataset = $this->Exec($this->GetInsert($safe));
+    protected function runInsert() {
+        $this->dataset = $this->Exec($this->GetInsert());
         $this->clearInsert();
     }
 
@@ -731,14 +739,11 @@ class Model {
      *
      * @param   string      $set        - The SET field and value
      */
-    protected function addInsertSet($set) {
-        if (is_array($set)) {
-            foreach ($set as $field => $value) {
-                $this->insertset[] = $field . '=' . utf8_encode($value);
-            }
-        } else {
-            $this->insertset[] = $set;
-        }
+    protected function addInsertSet($field, $value, $quoted = true) {
+
+        !$quoted || $value = '"' . $value . '"';
+        $this->insertset[$field] = $value;
+
     }
 
     /**
@@ -769,7 +774,9 @@ class Model {
      * @return  string      - The statement
      */
     protected function getInsert() {
-        $query = 'INSERT INTO ' . $this->inserttable . ' SET ' . implode(',', $this->insertset);
+        $insertSet = array();
+        foreach ($this->insertset as $field => $value) $insertSet[] = $field . ' = ' . $value;
+        $query = 'INSERT INTO ' . $this->inserttable . ' SET ' . implode(',', $insertSet);
         if (count($this->insertspecials) > 0) {
             $query .= ' ' . implode(' ', $this->insertspecials);
         }
@@ -914,8 +921,37 @@ class Model {
      *
      * @return  array               - The result array
      */
-    public function getResult() {
+    public function getRows() {
         return $this->dataset;
+    }
+
+    /**
+     * Returns if a query executed successfully
+     *
+     * @return bool
+     */
+    public function queryOk() {
+        return $this->errorInfo['code'] == 0;
+    }
+
+    /**
+     * Returns the last error code
+     * or 0 if no errors occurred
+     *
+     * @return  int
+     */
+    public function getErrorCode() {
+        return $this->errorInfo['code'];
+    }
+
+    /**
+     * Returns the last error message
+     * or empty if no errors occurred
+     *
+     * @return mixed
+     */
+    public function getError() {
+        return $this->errorInfo['message'];
     }
 
 

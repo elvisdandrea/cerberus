@@ -61,7 +61,7 @@ require_once MAINDIR . '/handler.php';
 /**
  * Some configuration
  */
-define('RESTFUL', '1');                         // If attends to ReSTful requests
+define('RESTFUL', '0');                         // If attends to ReSTful requests
 
 define('HOME', 'home');                         // Home Sweet Home - The module name to be used as home module
 define('AUTH', 'auth');                         // The module to be used as authentication module

@@ -152,4 +152,5 @@ class homeControl extends Control {
         );
         $this->commitReplace('Created!', '#alert');
     }
+
 }
