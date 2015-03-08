@@ -19,4 +19,36 @@ class authControl extends Control {
     }
 
 
+    /**
+     * Authenticate via RESTful method
+     *
+     * This authentication method requires
+     * the specification of the UID and Secret
+     * instead of normal user and pass.
+     *
+     * This will also generate the access token
+     * and refresh token to be used on RESTful
+     * requests
+     *
+     */
+    public function authenticate() {
+
+        $this->model('auth')->authUser(
+            $this->getQueryString('uid'),
+            $this->getQueryString('secret')
+        );
+
+    }
+
+    /**
+     * Form user login
+     *
+     * This authentication method requires
+     * user and password and will not generate
+     * access token or refresh token
+     */
+    public function login() {
+
+    }
+
 }

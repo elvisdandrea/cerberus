@@ -1,7 +1,19 @@
 <?php
 
+/**
+ * Class Debugger
+ *
+ *
+ */
 class Debugger {
 
+    /**
+     * Dumps anything you need to see
+     *
+     * @param   mixed       $mixed      - What to debug
+     * @param   string      $element    - Where to render it
+     * @return  string
+     */
     public static function debug($mixed, $element = 'html') {
 
         //TODO: RESTful debug

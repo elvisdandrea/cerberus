@@ -12,5 +12,18 @@ class authModel extends Model {
         parent::__construct();
     }
 
+    public function authUser($uid, $secret) {
+
+        $this->addField('uid');
+        $this->addField('name');
+        $this->addField('email');
+        $this->addFrom('users');
+        $this->addWhere('secret = "' . $secret . '"');
+        $this->addWhere('uid = "' . $uid . '"');
+
+        $this->runQuery();
+        return !$this->isEmpty();
+    }
+
 
 }

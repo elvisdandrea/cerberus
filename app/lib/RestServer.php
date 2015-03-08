@@ -29,7 +29,8 @@ class RestServer {
      */
     public static function authenticate() {
 
-        //TODO: ReSTful OAuth2 Authentication method
+        $authControl = new authControl();
+        $authControl->authenticate();
     }
 
     /**
