@@ -130,6 +130,27 @@ Html.prototype = {
                 console.log(error);
             }
         });
+    },
+
+    /**
+     * Runs an ajax GET
+     * @param           url         - The URL string
+     * @param           callback    - The callback function
+     * @constructor
+     */
+    Get: function(url, callback) {
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: callback,
+            async: true,
+            error: function(xhr, textStatus, error){
+                $('html').html(xhr.responseText);
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
     }
 
 }

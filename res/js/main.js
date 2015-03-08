@@ -36,7 +36,7 @@ Main.prototype = {
 
             var action = $(this).attr('href');
             e.preventDefault();
-            Html.Post(action,'',function(r){
+            Html.Get(action, function(r){
                 eval(r);
                 window.history.replaceState(undefined, '', action);
                 return false;
@@ -82,7 +82,7 @@ Main.prototype = {
      */
     quickLink : function(action) {
 
-        Html.Post(action,'',function(r){
+        Html.Get(action, function(r){
             eval(r);
             window.history.replaceState(undefined, '', action);
             return false;
