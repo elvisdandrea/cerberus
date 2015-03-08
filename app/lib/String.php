@@ -60,7 +60,7 @@ class String {
      * @return  string                      - The converted string
      */
     public static function BuildStringNewLines( $string, $concat_char = '+' ) {
-        return preg_replace( '/\n+/', '\'' . "\n" . $concat_char .'"\\n"' . $concat_char . '\'', trim( $string ));
+        return preg_replace( '/' . PHP_EOL . '+/', '\'' . PHP_EOL . $concat_char .'"\\' . PHP_EOL .'"' . $concat_char . '\'', trim( $string ));
     }
 
     /**
