@@ -140,6 +140,7 @@ class RestServer {
      *
      * @param   string      $message        - A mensagem de texto
      * @param   int         $status         - THe error status
+     * @return  array
      * @throws  ExceptionHandler
      */
     public static function throwError($message, $status = 400) {
@@ -149,7 +150,10 @@ class RestServer {
             'message'       => $message
         );
 
-        throw new ExceptionHandler(json_encode($response, JSON_UNESCAPED_UNICODE), $status);
+        if(RESTFUL == '1')
+            throw new ExceptionHandler(json_encode($response, JSON_UNESCAPED_UNICODE), $status);
+
+        return $response;
 
     }
 
@@ -157,13 +161,21 @@ class RestServer {
      * ReSTful Response
      *
      * @param   array   $data       - Array com os dados da resposta
+     * @return  string
      * @throws  Exception
      */
     public static function response(array $data, $statusCode = 200) {
 
-        self::setResponseCode($statusCode);
-        self::setFormat('json', true);
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        $response = json_encode($data, JSON_UNESCAPED_UNICODE);
+
+        if(RESTFUL == '1') {
+            self::setResponseCode($statusCode);
+            self::setFormat('json', true);
+            echo $response;
+            self::terminate();
+        }
+
+        return $response;
     }
 
     /**
