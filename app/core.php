@@ -45,6 +45,34 @@
 class core {
 
     /**
+     * The current working controller object
+     *
+     * @var
+     */
+    private $controller;
+
+    /**
+     * Static controllers
+     *
+     * @var
+     */
+    private static $static_controller;
+
+    /**
+     * Request Headers
+     *
+     * @var array
+     */
+    private static $headers = array();
+
+    /**
+     * The Remote Address
+     *
+     * @var
+     */
+    private static $remote_address;
+
+    /**
      * The URL Loader
      *
      * Thou shalt not call superglobals directly
@@ -67,6 +95,45 @@ class core {
         });
 
         return $uri;
+    }
+
+    /**
+     * Parses HTTP headers
+     *
+     * @return  array
+     */
+    private static function parseRequestHeaders() {
+        $headers = array();
+        foreach($_SERVER as $key => $value) {
+            if (substr($key, 0, 5) <> 'HTTP_') continue;
+            $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
+            $headers[$header] = $value;
+        }
+        self::$headers = $headers;
+        self::$remote_address = $_SERVER['REMOTE_ADDR'];
+    }
+
+    /**
+     * Returns HTTP Headers
+     *
+     * @param   bool            $header
+     * @return  array|string
+     */
+    public static function getHttpHeaders($header = false) {
+        if ($header)
+            return isset(self::$headers[$header]) ? self::$headers[$header] : '';
+
+        return self::$headers;
+    }
+
+    /**
+     * Returns the user remote address
+     *
+     * @return mixed
+     */
+    public static function getRemoteAddress() {
+
+        return self::$remote_address;
     }
 
     /**
@@ -102,13 +169,14 @@ class core {
             if (!self::isAjax()) return;
 
             $notFoundAction = METHOD_NOT_FOUND;
-            $home = self::requireHome();
-            $home->$notFoundAction($uri);
+            self::$static_controller = self::requireHome();
+            self::$static_controller->$notFoundAction($uri);
             self::terminate();
         }
 
-        $control = new $module;
-        $result = $control->$action();
+        self::$static_controller = new $module;
+        $result = self::$static_controller->$action();
+        unset(self::$static_controller);
         echo $result;
     }
 
@@ -170,6 +238,8 @@ class core {
      */
     public function execute() {
 
+        $this->parseRequestHeaders();
+
         $uri = $this->loadUrl();                    // Loads the called URL
         String::arrayTrimNumericIndexed($uri);      // Trim the URL array indexes
 
@@ -188,8 +258,8 @@ class core {
          */
         if (!$this->isAjax()) {
 
-            $home = $this->requireHome();
-            $home->itStarts($uri);
+            $this->controller = $this->requireHome();
+            $this->controller->itStarts($uri);
             $this->terminate();
         }
 
@@ -205,6 +275,8 @@ class core {
      */
     public function terminate() {
 
+        unset($this->controller);
+        unset(self::$static_controller);
         unset($this);
         exit;
     }

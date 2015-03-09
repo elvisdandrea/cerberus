@@ -31,6 +31,7 @@ class RestServer {
 
         $authControl = new authControl();
         $authControl->authenticate();
+        unset($authControl);
     }
 
     /**
@@ -41,6 +42,7 @@ class RestServer {
      */
     public static function runRestMethod(array $uri) {
 
+        self::setFormat(RESTFORMAT, false);
         self::authenticate();
         if (count($uri) < 1 || $uri[0] == '')
             throw new ExceptionHandler(Language::REST_NO_METHOD(), 400);
@@ -60,6 +62,7 @@ class RestServer {
 
         $result = $control->$action();
         self::response($result);
+        unset($control);
         self::terminate();
     }
 
@@ -108,20 +111,11 @@ class RestServer {
      */
     public static function acceptableHeaders(array $acceptables) {
 
+        $accepHeaders = explode(',', Core::getHttpHeaders('Accept'));
+
         foreach ($acceptables as $acceptable)
-            self::setHeader('Accept', $acceptable);
-    }
+            in_array($acceptable, $accepHeaders) || self::throwError(Language::NOT_ACCEPTABLE($acceptable), 406);
 
-    /**
-     * Validate Required Values in a array
-     *
-     * @param   array   $data           - The data array
-     * @param   array   $validation     - An array with a list of indexes that must contain in the data array
-     */
-    public static function validate($data, $validation = array()) {
-
-        foreach ($validation as $index)
-            (isset($data[$index]) && $data[$index] != '') || self::throwError('The value "' . $index . '" is required for this method.');
     }
 
     /**
@@ -145,13 +139,13 @@ class RestServer {
      */
     public static function throwError($message, $status = 400) {
 
+        if(RESTFUL == '1')
+            throw new ExceptionHandler($message, $status);
+
         $response = array(
             'status'        => $status,
             'message'       => $message
         );
-
-        if(RESTFUL == '1')
-            throw new ExceptionHandler(json_encode($response, JSON_UNESCAPED_UNICODE), $status);
 
         return $response;
 
@@ -166,16 +160,14 @@ class RestServer {
      */
     public static function response(array $data, $statusCode = 200) {
 
-        $response = json_encode($data, JSON_UNESCAPED_UNICODE);
-
         if(RESTFUL == '1') {
+            $response = json_encode($data, JSON_UNESCAPED_UNICODE);
             self::setResponseCode($statusCode);
-            self::setFormat('json', true);
             echo $response;
             self::terminate();
         }
 
-        return $response;
+        return $data;
     }
 
     /**

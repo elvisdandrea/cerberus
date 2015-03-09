@@ -171,6 +171,13 @@ class Model {
     public $dataset = array();
 
     /**
+     * The last insert auto-increment ID
+     *
+     * @var int
+     */
+    private $lastId = 0;
+
+    /**
      * The error code of the last query
      *
      * It's 0 when no error occurred
@@ -379,6 +386,15 @@ class Model {
     }
 
     /**
+     * Returns the last insert auto_increment Id
+     *
+     * @return int
+     */
+    public function getLastInsertId() {
+        return $this->lastId;
+    }
+
+    /**
      * Sets the Model ID
      *
      * @param $id
@@ -519,14 +535,18 @@ class Model {
      * @throws  Exception               - Only when on Dev Environment
      */
     private function Exec($query) {
+
         $this->connect($this->connection);
         $result = $this->connections[$this->connection]['conn']->prepare($query);
+
         $result->execute();
         $info = $result->errorInfo();
         $this->errorInfo = array(
             'code'      => intval($info[0]),
             'message'   => $info[2]
         );
+
+        $this->lastId = $this->connections[$this->connection]['conn']->lastInsertId();
 
         $this->result = $this->errorInfo['code'] == 0;
         $dataset = $result->fetchAll();
