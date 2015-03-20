@@ -66,6 +66,13 @@ class core {
     private static $headers = array();
 
     /**
+     * Server Data
+     *
+     * @var array
+     */
+    private static $server = array();
+
+    /**
      * The Remote Address
      *
      * @var
@@ -98,19 +105,47 @@ class core {
     }
 
     /**
+     * Returns the working domain
+     */
+    public static function getDomain() {
+
+        return filter_input(INPUT_SERVER, 'SERVER_NAME');
+    }
+
+    /**
+     * Checks if server is under a certain subdomain
+     *
+     * @param   string      $subdomain      - The subdomain to test
+     * @return  bool
+     */
+    public static function isUnderSubdomain($subdomain) {
+
+        $domain = explode('.' ,self::getDomain());
+        return $domain[0] == $subdomain;
+    }
+
+    /**
+     * Gets server values
+     */
+    private static function parsetServerData() {
+
+        self::$server = filter_input_array(INPUT_SERVER, FILTER_SANITIZE_ENCODED);
+    }
+
+    /**
      * Parses HTTP headers
      *
      * @return  array
      */
     private static function parseRequestHeaders() {
         $headers = array();
-        foreach($_SERVER as $key => $value) {
+        foreach(self::$server as $key => $value) {
             if (substr($key, 0, 5) <> 'HTTP_') continue;
             $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
             $headers[$header] = $value;
         }
         self::$headers = $headers;
-        self::$remote_address = $_SERVER['REMOTE_ADDR'];
+        self::$remote_address = self::$server['REMOTE_ADDR'];
     }
 
     /**
@@ -134,6 +169,17 @@ class core {
     public static function getRemoteAddress() {
 
         return self::$remote_address;
+    }
+
+    /**
+     * Tests if user is logged in
+     *
+     * @return bool
+     */
+    public static function isLoggedIn() {
+
+        $uid = Session::get('uid');
+        return is_array($uid) && isset($uid['db_connection']);
     }
 
     /**
@@ -170,13 +216,15 @@ class core {
 
             $notFoundAction = METHOD_NOT_FOUND;
             self::$static_controller = self::requireHome();
+            if (self::isLoggedIn())
+                self::$static_controller->newModel('uid');
+
             self::$static_controller->$notFoundAction($uri);
             self::terminate();
         }
 
         self::$static_controller = new $module;
         $result = self::$static_controller->$action();
-        unset(self::$static_controller);
         echo $result;
     }
 
@@ -204,7 +252,7 @@ class core {
      * @return bool
      */
     public static function isAjax() {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+        return isset(self::$server['HTTP_X_REQUESTED_WITH']) && strtolower(self::$server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
 
     /**
@@ -213,7 +261,8 @@ class core {
      * @return bool
      */
     public static function isLocal() {
-        return (strpos($_SERVER['SERVER_ADDR'], '192.168') !== false || $_SERVER['HTTP_HOST'] == 'localhost');
+        return (strpos(filter_input(INPUT_SERVER, 'SERVER_ADDR', FILTER_SANITIZE_ENCODED), '192.168') !== false ||
+            filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_ENCODED) == 'localhost');
     }
 
     /**
@@ -228,6 +277,28 @@ class core {
     }
 
     /**
+     * Verifies if user is authenticated.
+     * If not, redirect to login page
+     *
+     * @param   array       $uri        - The working uri
+     */
+    private function checkAuthenticated(array $uri) {
+
+        if (self::isLoggedIn()) return;
+        // TODO: Refractor me, for the lord's sake
+        if ($this->isAjax()) {
+            if (count($uri) == 0 || !($uri[0] == 'auth' && $uri[1] == 'login')) {
+                Html::refresh();
+                $this->terminate();
+            }
+        } else {
+            $authControl = new authControl();
+            echo $authControl->loginPage();
+            $this->terminate();
+        }
+    }
+
+    /**
      * The main execution
      *
      * It will verify the URL and
@@ -238,6 +309,7 @@ class core {
      */
     public function execute() {
 
+        $this->parsetServerData();
         $this->parseRequestHeaders();
 
         $uri = $this->loadUrl();                    // Loads the called URL
@@ -252,6 +324,12 @@ class core {
         }
 
         /**
+         * When it's required to be a logged user to access
+         */
+        if (REQUIRE_LOGIN == '1')
+            $this->checkAuthenticated($uri);
+
+        /**
          * When the request is not running over ajax,
          * then call the home for full page rendering
          * before calling the requested method
@@ -259,6 +337,9 @@ class core {
         if (!$this->isAjax()) {
 
             $this->controller = $this->requireHome();
+            if (self::isLoggedIn())
+                $this->controller->newModel('uid');
+
             $this->controller->itStarts($uri);
             $this->terminate();
         }
@@ -276,7 +357,6 @@ class core {
     public function terminate() {
 
         unset($this->controller);
-        unset(self::$static_controller);
         unset($this);
         exit;
     }

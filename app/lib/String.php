@@ -149,6 +149,28 @@ class String {
     }
 
     /**
+     * Applies any mask based on # character
+     *
+     * Such a wow I just did
+     *
+     * @param   string      $val        - The number value
+     * @param   string      $mask       - The desired mask
+     * @return  string
+     */
+    public static function mask($val, $mask) {
+
+        $val = preg_replace('/[^a-z0-9\-]/i','', $val);
+        $masked = '';
+        $k = strlen($val) - 1;
+        for($i = strlen($mask)-1; $i>=0; $i--) {
+            if ($k < 0) break;
+            $mask[$i] != '#' || $masked = $val[$k--] . $masked;
+            $mask[$i] == '#' || $masked = $mask[$i]  . $masked;
+        }
+        return $masked;
+    }
+
+    /**
      * Removes empty values for arrays
      * with numeric indexes
      *

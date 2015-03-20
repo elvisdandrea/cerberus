@@ -96,8 +96,9 @@ class Control {
      * even though I'm doing it in this function
      */
     public function __construct() {
-        $this->post = String::ClearArray($_POST);
-        $this->get  = String::ClearArray($_GET);
+
+        $this->post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED, FILTER_SANITIZE_SPECIAL_CHARS);
+        $this->get  = filter_input_array(INPUT_GET, FILTER_SANITIZE_ENCODED, FILTER_SANITIZE_SPECIAL_CHARS);
 
         $ref = new ReflectionClass($this);
         $this->moduleName = basename(dirname($ref->getFileName()));
@@ -232,6 +233,25 @@ class Control {
     }
 
     /**
+     * Validates if a GET query string value is empty
+     *
+     * Indexes should be passed as
+     * parameter
+     *
+     * @return bool
+     */
+    protected function validateQueryString() {
+
+        $args = func_get_args();
+
+        foreach ($args as $arg)
+            if (!isset($this->get[$arg]) || $this->get[$arg] == '')
+                return false;
+
+        return true;
+    }
+
+    /**
      * Throws a 404 Error
      *
      * Used for security features
@@ -277,7 +297,7 @@ class Control {
     protected function commitReplace($html, $block, $stay = true) {
 
         echo (!Core::isAjax() ? $html : Html::ReplaceHtml($html, $block));
-        $stay || $this->terminate();;
+        $stay || $this->terminate();
     }
 
     /**

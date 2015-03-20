@@ -96,7 +96,7 @@ class authControl extends Control {
      * user and password and will not generate
      * access token or refresh token
      */
-    public function login() {
+    public function loginPage() {
 
     }
 

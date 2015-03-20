@@ -76,6 +76,7 @@ class View {
         $this->smarty->setTemplateDir(TPLDIR . '/' . $this->templateName);
         $this->smarty->setCompileDir(IFCDIR . '/cache');
 
+        defined('T_URL')     || define('T_URL',     MAINURL . '/tpl/' . $this->templateName );
         defined('T_CSSURL')  || define('T_CSSURL',  MAINURL . '/tpl/' . $this->templateName . '/res/css' );
         defined('T_JSURL')   || define('T_JSURL',   MAINURL . '/tpl/' . $this->templateName . '/res/js' );
         defined('T_IMGURL')  || define('T_IMGURL',  MAINURL . '/tpl/' . $this->templateName . '/res/img' );
@@ -97,15 +98,11 @@ class View {
         if (count($this->jsFiles) == 0) return '';
 
         $result = array();
-        $result[] = '<script>';
 
         foreach ($this->jsFiles as $jsFileName) {
-            $jsFileName = TPLDIR . '/' . $this->templateName . '/' . $this->moduleName . '/js/' . $jsFileName . '.js';
-            $content = file_get_contents($jsFileName);
-            $result[] = $content;
+            $jsFileName =  T_URL. '/' . $this->moduleName . '/js/' . $jsFileName . '.js';
+            $result[] = '<script src="'. $jsFileName. '"></script>';
         }
-
-        $result[] = '</script>';
 
         return implode(' ', $result);
     }
