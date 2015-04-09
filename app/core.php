@@ -73,11 +73,40 @@ class core {
     private static $server = array();
 
     /**
+     * Server URI
+     *
+     * @var array
+     */
+    private static $uri = array();
+
+    /**
      * The Remote Address
      *
      * @var
      */
     private static $remote_address;
+
+    /**
+     * The constructor
+     *
+     * It loads the core requirements
+     */
+    public function __construct() {
+
+        $this->parseServerData();
+        $this->parseRequestHeaders();
+        $this->loadUrl();
+
+        foreach(array(
+                    LIBDIR . '/smarty/Smarty.class.php',
+
+                    IFCDIR . '/control.php',
+                    IFCDIR . '/model.php',
+                    IFCDIR . '/view.php')
+
+                as $dep) include_once $dep;
+
+    }
 
     /**
      * The URL Loader
@@ -101,7 +130,8 @@ class core {
             $item = substr($item, 0, strpos($item, '?'));
         });
 
-        return $uri;
+        String::arrayTrimNumericIndexed($uri);
+        self::$uri = $uri;
     }
 
     /**
@@ -127,9 +157,41 @@ class core {
     /**
      * Gets server values
      */
-    private static function parsetServerData() {
+    private static function parseServerData() {
 
         self::$server = filter_input_array(INPUT_SERVER, FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
+    }
+
+    /**
+     * Returns a server information
+     *
+     * @param   bool|string      $info   - The information ( false for full server information )
+     * @return  bool
+     */
+    public function getServerInfo($info = false) {
+
+        if (!$info) return
+            self::$server;
+
+        $result = false;
+        !self::$server[$info] ||
+        $result = self::$server[$info];
+
+        return $result;
+    }
+
+    /**
+     * Data access prevention
+     *
+     * Returns server information instead of
+     * class privates
+     *
+     * @param   string  $name   - Server info name
+     * @return  bool
+     */
+    public static function __get($name) {
+
+        return self::getServerInfo(strtoupper($name));
     }
 
     /**
@@ -183,13 +245,13 @@ class core {
     }
 
     /**
-     * Returns the called URI
+     * Returns an array of the current Server URI
      *
-     * @return array|mixed
+     * @return array
      */
-    public static function getURI() {
+    public static function getUri() {
 
-        return self::loadUrl();
+        return self::$uri;
     }
 
     /**
@@ -248,24 +310,6 @@ class core {
         }
 
         return $result;
-    }
-
-    /**
-     * The constructor
-     *
-     * It loads the core requirements
-     */
-    public function __construct() {
-
-        foreach(array(
-                    LIBDIR . '/smarty/Smarty.class.php',
-
-                    IFCDIR . '/control.php',
-                    IFCDIR . '/model.php',
-                    IFCDIR . '/view.php')
-
-                as $dep) include_once $dep;
-
     }
 
     /**
@@ -331,11 +375,7 @@ class core {
      */
     public function execute() {
 
-        $this->parsetServerData();
-        $this->parseRequestHeaders();
-
-        $uri = $this->loadUrl();                    // Loads the called URL
-        String::arrayTrimNumericIndexed($uri);      // Trim the URL array indexes
+        $uri = self::getUri();
 
         /**
          * When server is running as a RESTful server
