@@ -64,6 +64,7 @@ require_once MAINDIR . '/handler.php';
 define('RESTFUL', '0');                         // If attends to ReSTful requests
 
 define('HOME', 'home');                         // Home Sweet Home - The module name to be used as home module
+define('MAIN', 'home');                         // The well known Main() - the bootstrap function after core loading
 define('AUTH', 'auth');                         // The module to be used as authentication module
 define('TEMPLATE', 'default');                  // The view template
 

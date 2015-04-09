@@ -98,6 +98,11 @@ class authControl extends Control {
      */
     public function loginPage() {
 
+        /**
+         * Implement here your login page
+         */
+
+        return '';
     }
 
     /**
@@ -135,6 +140,9 @@ class authControl extends Control {
         ), 200);
     }
 
+    /**
+     * User creation handler
+     */
     public function createUser() {
 
         if ($this->getPost('pass') != $this->getPost('passrepeat'))

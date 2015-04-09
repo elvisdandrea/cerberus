@@ -97,8 +97,8 @@ class Control {
      */
     public function __construct() {
 
-        $this->post = filter_input_array(INPUT_POST, FILTER_SANITIZE_ENCODED, FILTER_SANITIZE_SPECIAL_CHARS);
-        $this->get  = filter_input_array(INPUT_GET, FILTER_SANITIZE_ENCODED, FILTER_SANITIZE_SPECIAL_CHARS);
+        $this->post = filter_input_array(INPUT_POST, FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
+        $this->get  = filter_input_array(INPUT_GET,  FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
 
         $ref = new ReflectionClass($this);
         $this->moduleName = basename(dirname($ref->getFileName()));
@@ -169,7 +169,7 @@ class Control {
             return $this->post;
 
         if (count($args) == 1)
-            return $this->post[$args[0]];
+            return isset($this->post[$args[0]]) ? $this->post[$args[0]] : false;
 
         $result = array();
         foreach ($args as $arg)
@@ -252,11 +252,11 @@ class Control {
     }
 
     /**
-     * Throws a 404 Error
+     * Drops to a 404 Error
      *
      * Used for security features
      */
-    protected function throw404() {
+    protected function drop404() {
         header('HTTP/1.0 404 Not Found');
         exit;
     }
@@ -268,10 +268,20 @@ class Control {
      * @return  mixed
      */
     protected function getQueryString($name = false) {
-        if ($name)
-            return (isset($this->get[$name]) ? $this->get[$name] : false);
 
-        return $this->get;
+        $args = func_get_args();
+
+        if (count($args) == 0)
+            return $this->get;
+
+        if (count($args) == 1)
+            return isset($this->get[$args[0]]) ? $this->get[$args[0]] : false;
+
+        $result = array();
+        foreach ($args as $arg)
+            !isset($this->get[$arg]) || $result[$arg] = $this->get[$arg];
+
+        return $result;
     }
 
     /**

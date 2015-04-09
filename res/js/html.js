@@ -11,7 +11,7 @@ function Html(){}
 /**
  * The HTML Prototype
  *
- * @type {{Add: Function, Replace: Function, Show: Function, Hide: Function, SetLocation: Function, AsyncLoadList: Function, Post: Function}}
+ * @type {{Add: Function, Replace: Function, Show: Function, Hide: Function, SetValue: Function, RemoveClass: Function, AddClass: Function, SetLocation: Function, AsyncLoadList: Function, Post: Function, Get: Function}}
  */
 Html.prototype = {
 
@@ -64,6 +64,42 @@ Html.prototype = {
     },
 
     /**
+     * Sets an element value
+     *
+     * @param           block       - The element
+     * @param           value       - The value
+     * @constructor
+     */
+    SetValue : function(block, value) {
+
+        $(block).val(value);
+    },
+
+    /**
+     * Removes an Element Class
+     *
+     * @param           block       - The element
+     * @param           className   - The class name
+     * @constructor
+     */
+    RemoveClass : function (block, className) {
+
+        $(block).removeClass(className);
+    },
+
+    /**
+     * Adds a Class to an Element
+     *
+     * @param           block       - The element
+     * @param           className   - The class name
+     * @constructor
+     */
+    AddClass : function (block, className) {
+
+        $(block).addClass(className);
+    },
+
+    /**
      * Redirects to a Location
      *
      * @param       location        - Where to go
@@ -83,29 +119,27 @@ Html.prototype = {
      * called. The request response must be the view of the
      * element with the found options
      *
-     * @param       id      - The Select ID
+     * @param       id          - The Select ID
+     * @param       selected    - The selected option value
      * @constructor
      */
-    AsyncLoadList: function(id) {
+    AsyncLoadList: function(id, selected) {
 
-        $('#'+id).ready(function(){
-            $('#'+id + ' select[href]').each(function(){
+        $('select#' + id + '[href]').each(function(){
 
-                var params = '';
-                if ($(this).attr('params') != undefined) {
-                    params = 'params='+encodeURIComponent($(this).attr('params'));
-                }
-                var elemId = $(this).attr('id');
+            var action = $(this).attr('href');
 
-                Html.Post($(this).attr('href'), params, function(a){
-                    $('#'+id + ' #'+elemId).html(a);
-                    $('#'+id + ' #'+elemId).trigger('chosen:updated');
-                    return false;
-                });
-
+            if (selected != undefined)
+                action += '?selected='+selected;
+            Html.Get(action, function(a){
+                $('#'+id).html(a);
+                //$('#'+id + ' #'+elemId).trigger('chosen:updated');
+                return false;
             });
-            return false;
+
         });
+
+
     },
 
     /**

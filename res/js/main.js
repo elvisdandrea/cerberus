@@ -65,13 +65,62 @@ Main.prototype = {
                 data.push($(this).attr('name')+'='+md5($(this).val()));
             });
 
-            Html.Post($(this).attr('action'), data.join('&'), function(r) {
-                eval(r);
-                return false;
+            $(this).find('img[type="upload"]').each(function(){
+                data.push($(this).attr('name')+'='+encodeURIComponent($(this).attr('src')));
             });
+
+            var method = 'post';
+            if ($(this).attr('method') != undefined) {
+                method = $(this).attr('method');
+            }
+
+            if (method == 'post') {
+                Html.Post($(this).attr('action'), data.join('&'), function(r) {
+                    eval(r);
+                    return false;
+                });
+            } else if (method == 'get') {
+                var url = $(this).attr('action') + '?' + data.join('&');
+                $('#loading').show();
+                Html.Get(url, function(r){
+                    eval(r);
+                    $('#loading').hide();
+                    return false;
+                });
+            }
 
         });
 
+    },
+
+    /**
+     * Creates a bas64 loader function for an input type="file"
+     *
+     * @param   inputId     - The input type="file" Id
+     * @param   imgId       - The Id of an element img to set the src as base64
+     */
+    imageAction : function(inputId, imgId) {
+
+        $('#loading').show();
+        document.getElementById(inputId).addEventListener('change', readImage, false);
+
+        function readImage(evt){
+
+            var f = evt.target.files[0];
+            if (!f) return false;
+
+            var r = new FileReader();
+
+            r.onloadend = function(e) {
+                var tempImg = new Image();
+                tempImg.src = e.target.result;
+                $('#' + imgId).attr('src', tempImg.src);
+                $('#loading').hide();
+            }
+
+            r.readAsDataURL(f);
+
+        }
     },
 
     /**
@@ -102,4 +151,5 @@ var Main = new Main();
  */
 Main.linkActions();
 Main.formActions();
+//Main.imageAction();   // Uncoment for activating base64 image loader
 

@@ -65,6 +65,41 @@ class Html {
     }
 
     /**
+     * Returns the function to dinamically
+     * set an element value
+     *
+     * @param   string      $value      - The value to be set
+     * @param   string      $element    - The element
+     * @return  string
+     */
+    public static function SetValue($value, $element) {
+        return 'Html.SetValue(\'' . $element . '\',\'' . $value . '\');';
+    }
+
+    /**
+     * Adds a class to an Element
+     *
+     * @param   string      $class      - The class name to be set
+     * @param   string      $element    - The element
+     * @return  string
+     */
+    public static function AddClass($class, $element) {
+        return 'Html.AddClass(\'' . $element . '\',\'' . $class . '\');';
+    }
+
+    /**
+     * Removes an Element class
+     *
+     * @param   string      $class      - The class name to be set
+     * @param   string      $element    - The element
+     * @return  string
+     */
+    public static function RemoveClass($class, $element) {
+
+        return 'Html.RemoveClass(\'' . $element . '\',\'' . $class . '\');';
+    }
+
+    /**
      * Still to be implemented
      *
      */
@@ -81,6 +116,18 @@ class Html {
      */
     public static function AsyncLoadList($id) {
         return 'Html.AsyncLoadList(\'' . $id . '\');';
+    }
+
+    /**
+     * Validates if string is URL
+     *
+     * @param   string      $string
+     * @return  bool
+     */
+    public static function isUrl($string) {
+
+        $url = parse_url($string);
+        return isset($url['scheme']) && in_array($url['scheme'], array('http', 'https'));
     }
 
     /**

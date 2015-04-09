@@ -88,7 +88,7 @@ class core {
      */
     private static function loadUrl(){
 
-        $uri = $_SERVER['REQUEST_URI'];
+        $uri = filter_input(INPUT_SERVER, 'REQUEST_URI');
 
         if (ENCRYPTURL == '1')
             $uri = CR::decrypt($uri);
@@ -129,7 +129,7 @@ class core {
      */
     private static function parsetServerData() {
 
-        self::$server = filter_input_array(INPUT_SERVER, FILTER_SANITIZE_ENCODED);
+        self::$server = filter_input_array(INPUT_SERVER, FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
     }
 
     /**
@@ -229,6 +229,28 @@ class core {
     }
 
     /**
+     * Get the response of a method execution
+     * into a string
+     *
+     * @param   array       $uri    - The method URI
+     * @return  string              - The response
+     */
+    public static function getMethodContent($uri) {
+
+        ob_start();
+        self::runMethod($uri);
+        $result = ob_get_contents();
+        ob_end_clean();
+
+        if ($result == '') {
+            $view = new View();
+            $result = $view->get404();
+        }
+
+        return $result;
+    }
+
+    /**
      * The constructor
      *
      * It loads the core requirements
@@ -261,8 +283,8 @@ class core {
      * @return bool
      */
     public static function isLocal() {
-        return (strpos(filter_input(INPUT_SERVER, 'SERVER_ADDR', FILTER_SANITIZE_ENCODED), '192.168') !== false ||
-            filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_ENCODED) == 'localhost');
+        return (strpos(filter_input(INPUT_SERVER, 'SERVER_ADDR', FILTER_SANITIZE_URL), '192.168') !== false ||
+            filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL) == 'localhost');
     }
 
     /**
