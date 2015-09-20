@@ -67,6 +67,7 @@ define('HOME', 'home');                         // Home Sweet Home - The module 
 define('MAIN', 'home');                         // The well known Main() - the bootstrap function after core loading
 define('AUTH', 'auth');                         // The module to be used as authentication module
 define('TEMPLATE', 'default');                  // The view template
+define('APPTITLE', ' - The fastest backend SPA'); // Define the static portion of page title here
 
 define('REQUIRE_LOGIN', '0');                   // If this framework should require a logged user
 
@@ -81,7 +82,6 @@ define('ENCRYPTURL', '0');                      // If requests must run over enc
 define('ENCRYPT_POST_DATA', '0');               // If it should encrypt data sent through post
 define('METHOD_NOT_FOUND', 'notFound');         // What to call when a method is not found
 define('DEFAULT_CONNECTION', 'connection1');    // The default connection used by models
-
 
 /**
  * The main execution

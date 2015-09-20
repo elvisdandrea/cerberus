@@ -275,7 +275,7 @@ class View {
 
             if ($changeTitle && count($this->pageTitle) > 0) {
                 $setTitle = Html::ReplaceHtml($this->pageTitle['title'], '#page_title') .
-                    Html::ReplaceHtml($this->pageTitle['description'] . ' - Orbit | gravi', 'title');
+                    Html::ReplaceHtml($this->pageTitle['description'] . APPTITLE, 'title');
 
                 if    (Core::isAjax()) echo $setTitle;
             }

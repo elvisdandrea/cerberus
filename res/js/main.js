@@ -32,9 +32,15 @@ Main.prototype = {
 
         $(document).on('click','a[href]', function(e){
 
-            if ( $(this).attr('href').indexOf('#') === 0 ||
+            if ($(this).attr('href').indexOf('#') === 0) return false;
+
+            if (
                 $(this).attr('href').indexOf('http://')  === 0 ||
-                $(this).attr('href').indexOf('https://') === 0 ) return false;
+                    $(this).attr('href').indexOf('https://') === 0 ) {
+
+                window.open($(this).attr('href'), '_blank');
+                return false;
+            }
 
             var action    = $(this).attr('href');
             var changeUrl = $(this).attr('changeurl') != undefined;
