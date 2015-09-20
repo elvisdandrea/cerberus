@@ -46,7 +46,7 @@
         Cerberus - Debugging Code</h1>
     <div class="message">
         <label>
-                <pre>{print_r($mixed)}
+                <pre>{print_r($mixed, true)}
                     </pre>
         </label>
         <label>
