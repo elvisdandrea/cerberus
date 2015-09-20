@@ -71,7 +71,7 @@ class View {
      */
     public function __construct() {
 
-        $this->setTemplateName('default');      //The default Template Name
+        $this->setTemplateName(TEMPLATE);      //The default Template Name
         $this->smarty = new Smarty();
         $this->smarty->setTemplateDir(TPLDIR . '/' . $this->templateName);
         $this->smarty->setCompileDir(IFCDIR . '/cache');
@@ -94,7 +94,7 @@ class View {
      *
      * @return string
      */
-    private function injectJSFiles() {
+    public function injectJSFiles() {
         if (count($this->jsFiles) == 0) return '';
 
         $result = array();
@@ -193,7 +193,7 @@ class View {
     public function render($fetch = true) {
 
         $method = $fetch ? 'fetch' : 'display';
-        return $this->smarty->$method($this->template) . (count($this->jsFiles) > 0 ? $this->injectJSFiles() : '');
+        return $this->smarty->$method($this->template) . (Core::isAjax() && count($this->jsFiles) > 0 ? $this->injectJSFiles() : '');
     }
 
     /**

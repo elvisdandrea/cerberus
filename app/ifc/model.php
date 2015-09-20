@@ -549,7 +549,7 @@ class Model {
         $this->lastId = $this->connections[$this->connection]['conn']->lastInsertId();
 
         $this->result = $this->errorInfo['code'] == 0;
-        $dataset = $result->fetchAll();
+        $dataset = $this->Mount($result);
         return $dataset;
     }
 
@@ -760,6 +760,8 @@ class Model {
      * @param   string      $set        - The SET field and value
      */
     protected function addInsertSet($field, $value, $quoted = true) {
+
+        $value = filter_var($value, FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
 
         !$quoted || $value = '"' . $value . '"';
         $this->insertset[$field] = $value;

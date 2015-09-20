@@ -126,7 +126,7 @@ class core {
         $uri = explode('/', $uri);
 
         array_walk($uri, function(&$item){
-            strpos($item, '?') == false ||
+            strpos($item, '?') === false ||
             $item = substr($item, 0, strpos($item, '?'));
         });
 
@@ -178,20 +178,6 @@ class core {
         $result = self::$server[$info];
 
         return $result;
-    }
-
-    /**
-     * Data access prevention
-     *
-     * Returns server information instead of
-     * class privates
-     *
-     * @param   string  $name   - Server info name
-     * @return  bool
-     */
-    public static function __get($name) {
-
-        return self::getServerInfo(strtoupper($name));
     }
 
     /**
@@ -313,6 +299,16 @@ class core {
     }
 
     /**
+     * Returns the current working controller
+     *
+     * @return mixed
+     */
+    public static function getController() {
+
+        return self::$static_controller;
+    }
+
+    /**
      * Is the request running over ajax?
      *
      * @return bool
@@ -327,8 +323,8 @@ class core {
      * @return bool
      */
     public static function isLocal() {
-        return (strpos(filter_input(INPUT_SERVER, 'SERVER_ADDR', FILTER_SANITIZE_URL), '192.168') !== false ||
-            filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL) == 'localhost');
+        return !filter_var(filter_input(INPUT_SERVER,'SERVER_ADDR'), FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)
+                            || (((ip2long(filter_input(INPUT_SERVER,'SERVER_ADDR')) & 0xff000000) == 0x7f000000) );
     }
 
     /**

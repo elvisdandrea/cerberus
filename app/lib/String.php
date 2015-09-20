@@ -19,10 +19,8 @@ class String {
      * @return  string                  - The escaped string
      */
     public static function ClearString( $string ) {
-        //TODO: It's begging for a real anti-injection algorith
 
-        #$string = mysql_real_escape_string($string);
-        $string = addslashes($string);
+        $string = filter_var($string, FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
         return $string;
     }
 

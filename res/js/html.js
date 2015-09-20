@@ -11,7 +11,7 @@ function Html(){}
 /**
  * The HTML Prototype
  *
- * @type {{Add: Function, Replace: Function, Show: Function, Hide: Function, SetValue: Function, RemoveClass: Function, AddClass: Function, SetLocation: Function, AsyncLoadList: Function, Post: Function, Get: Function}}
+ * @type {{Add: Function, Replace: Function, Show: Function, Hide: Function, SetLocation: Function, AsyncLoadList: Function, Post: Function}}
  */
 Html.prototype = {
 
@@ -40,6 +40,16 @@ Html.prototype = {
 
         $(block).html(html);
         return false;
+    },
+
+    /**
+     * Removes an element
+     *
+     * @param           block       - The element
+     * @constructor
+     */
+    Remove : function(block) {
+        $(block).remove();
     },
 
     /**
@@ -113,6 +123,44 @@ Html.prototype = {
     },
 
     /**
+     * Ajax Redirection
+     *
+     * @param   url             - The destination URL
+     * @param   changeUrl       - Change the URL on browser
+     * @constructor
+     */
+    Redirect: function(url, changeUrl) {
+
+        Main.quickLink(url, changeUrl);
+    },
+
+    /**
+     * Scrolls page to an element
+     *
+     * @param       element     - The element
+     * @param       speed       - The speed to reach the element
+     * @constructor
+     */
+    ScrollToElement : function (element, speed) {
+        $('html, body').animate(
+            {
+                scrollTop: $(element).offset().top
+            }, speed);
+    },
+
+    /**
+     * Appends a row to a Table
+     *
+     * @param           html        - The tr html
+     * @param           block       - The table Id/attribute
+     * @constructor
+     */
+    AppendToTable : function (html, block) {
+
+        $(block + ' tbody').append(html);
+    },
+
+    /**
      * Loads the options of a select input asynchronously
      *
      * The select must have an attribute href, so it will be
@@ -133,7 +181,6 @@ Html.prototype = {
                 action += '?selected='+selected;
             Html.Get(action, function(a){
                 $('#'+id).html(a);
-                //$('#'+id + ' #'+elemId).trigger('chosen:updated');
                 return false;
             });
 
@@ -151,6 +198,7 @@ Html.prototype = {
      * @constructor
      */
     Post: function(url,data,callback) {
+
         $.ajax({
             type: 'POST',
             url: url,

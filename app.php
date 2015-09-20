@@ -1,7 +1,7 @@
 <?php
 
 /**
- * App Configuration and Startup File
+ * App Configuration and Bootstrap File
  *
  * This is the begging of the magic.
  *
@@ -30,10 +30,10 @@
 /**
  * Directory Definition
  */
-define('MAINURL',   ( strpos($_SERVER['SERVER_NAME'], 'http://') !== false ? $_SERVER['SERVER_NAME'] :
-        'http://' . $_SERVER['SERVER_NAME'] ) . dirname($_SERVER["PHP_SELF"]));
-
-define('BASEDIR',     (dirname($_SERVER['PHP_SELF']) != '/' ? dirname($_SERVER['PHP_SELF']) . '/' : '/'));
+define('SERVER_NAME', filter_input(INPUT_SERVER, 'SERVER_NAME'));
+define('PHP_SELF',    filter_input(INPUT_SERVER, 'PHP_SELF'));
+define('MAINURL',   (strpos(SERVER_NAME, 'http://') !== false ? SERVER_NAME : 'http://' . SERVER_NAME ) . dirname(PHP_SELF) );
+define('BASEDIR',   (dirname(PHP_SELF) != '/' ? dirname(PHP_SELF) . '/' : '/'));
 
 define('MAINDIR',   __DIR__);
 define('APPDIR',    MAINDIR .   '/app');
@@ -72,8 +72,9 @@ define('REQUIRE_LOGIN', '0');                   // If this framework should requ
 
 define('LNG', 'pt');                            // Site Language
 
-(Core::isLocal() ? define('ENVDEV', '1') :      // An elegant way of preventing ENVDEV = 1 on deploy
-    define('ENVDEV', '0'));                     // Development Enviroment
+(Core::isLocal() ?                              // An elegant way of preventing ENVDEV = 1 on deploy server
+    define('ENVDEV', '1') :                     // Development Enviroment is ON
+    define('ENVDEV', '0'));                     // Development Enviroment is OFF
 
 define('RESTFORMAT', 'json');                   // If ReSTful, which format we're working (JSON please)
 define('ENCRYPTURL', '0');                      // If requests must run over encrypted URLs
