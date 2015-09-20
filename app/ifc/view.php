@@ -64,6 +64,15 @@ class View {
     private $jsFiles = array();
 
     /**
+     * When you need to append a generic template Javascript to the committed HTML
+     *
+     * @var array
+     */
+    private $templateJsFiles = array();
+
+    private $pageTitle = array();
+
+    /**
      * The constructor
      *
      * It instances the Smarty class
@@ -95,12 +104,17 @@ class View {
      * @return string
      */
     public function injectJSFiles() {
-        if (count($this->jsFiles) == 0) return '';
+        if (count($this->jsFiles) == 0 && count($this->templateJsFiles) == 0) return '';
 
         $result = array();
 
         foreach ($this->jsFiles as $jsFileName) {
             $jsFileName =  T_URL. '/' . $this->moduleName . '/js/' . $jsFileName . '.js';
+            $result[] = '<script src="'. $jsFileName. '"></script>';
+        }
+
+        foreach ($this->templateJsFiles as $jsFileName) {
+            $jsFileName =  T_JSURL . '/' . $jsFileName . '.js';
             $result[] = '<script src="'. $jsFileName. '"></script>';
         }
 
@@ -115,6 +129,16 @@ class View {
     public function appendJs($jsFile) {
 
         $this->jsFiles[] = $jsFile;
+
+    }
+
+    /**
+     * Adds a js file to be committed along with HTML
+     *
+     * @param   string      $jsFile     - The JS file name in the module template folder
+     */
+    public function appendTemplateJs($jsFile) {
+        $this->templateJsFiles[] = $jsFile;
     }
 
     /**
@@ -173,6 +197,12 @@ class View {
         $this->template = $name . '.tpl';
     }
 
+    public function loadSystemTemplate($module, $name) {
+
+        $name = $module . '/' . $name;
+        $this->template = $name . '.tpl';
+    }
+
     /**
      * Sets a variable in the template
      *
@@ -185,15 +215,81 @@ class View {
     }
 
     /**
-     * Renders a template
+     * Sets the page_title variable on the layout
      *
-     * @param   bool        $fetch      - Just return the html instead of rendering directly on screen
+     * You must place this variable in a position you
+     * want to display the current page title
+     *
+     * @param   string  $title          - The title
+     * @param   string  $description    - The page description
      * @return  string
      */
-    public function render($fetch = true) {
+    public function setPageTitle($title, $description) {
 
-        $method = $fetch ? 'fetch' : 'display';
-        return $this->smarty->$method($this->template) . (Core::isAjax() && count($this->jsFiles) > 0 ? $this->injectJSFiles() : '');
+        $this->pageTitle = array(
+            'title'         =>  $title,
+            'description'   => $description
+        );
+    }
+
+    /**
+     * Displays an alert box
+     *
+     * @param   string  $type       - The alert type
+     * @param   string  $title      - Title of the box
+     * @param   string  $content    - Content of the box
+     * @return  string              - The rendered box html
+     */
+    public function showAlert($type, $title, $content) {
+        $types = array(
+            'warning'       => 'alert-warning',
+            'error'         => 'alert-danger',
+            'info'          => 'alert-info',
+            'danger'        => 'alert-danger',
+            'success'       => 'alert-success',
+            'dismissable'   => 'alert-dismissable'
+        );
+
+        isset($types[$type]) || $type = 'warning';
+
+        $this->template = 'ifc/alert.tpl';
+
+        $this->setVariable('title',   $title);
+        $this->setVariable('content', $content);
+        $this->setVariable('type',    $types[$type]);
+
+        return $this->render();
+    }
+
+    /**
+     * Renders a template
+     *
+     * @param   bool        $fetch          - Just return the html instead of rendering directly on screen
+     * @param   bool        $changeTitle    - If it must change the title to the module's title
+     * @return  string
+     */
+    public function render($fetch = true, $changeTitle = true) {
+
+        try {
+            $method = $fetch ? 'fetch' : 'display';
+
+            if ($changeTitle && count($this->pageTitle) > 0) {
+                $setTitle = Html::ReplaceHtml($this->pageTitle['title'], '#page_title') .
+                    Html::ReplaceHtml($this->pageTitle['description'] . ' - Orbit | gravi', 'title');
+
+                if    (Core::isAjax()) echo $setTitle;
+            }
+
+            $hasJs = (count($this->jsFiles) > 0 || count($this->templateJsFiles) > 0);
+            return $this->smarty->$method($this->template) . (Core::isAjax() && $hasJs ? $this->injectJSFiles() : '');
+        } catch (Exception $e) {
+            echo Html::ReplaceHtml(ExceptionHandler::throwException(array(
+                'message'  => $e->getMessage(),
+                'file'     => $e->getFile(),
+                'line'     => $e->getLine()
+            )), '#content');
+            exit;
+        }
     }
 
     /**

@@ -102,7 +102,7 @@ Class ExceptionHandler extends Exception {
      * @param   $error      - The error trace ( an array('message' => 'The Error Message', 'file' => 'The File Name', 'Class' => 'The Class Name') )
      * @return  string      - The rendered error page
      */
-    private static function throwException(array $error) {
+    public static function throwException(array $error) {
 
         $trace = debug_backtrace();
 
