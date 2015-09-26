@@ -255,7 +255,8 @@ class core {
         if (count($uri) < 1 || $uri[0] == '') return;
 
         $module = $uri[0].'Control';
-        if (!isset($uri[1]) || $uri[1] == '') $uri[1] = $uri[0] . 'Page';
+        $id     = intval($uri[1]) > 0 ? intval($uri[1]) : 0;
+        if (!isset($uri[1]) || $uri[1] == '' || intval($uri[1]) > 0) $uri[1] = $uri[0] . 'Page';
 
         $action = $uri[1];
 
@@ -272,6 +273,7 @@ class core {
         }
 
         self::$static_controller = new $module;
+        $id == 0 || self::$static_controller->setId($id);
         $result = self::$static_controller->$action();
         echo $result;
     }
