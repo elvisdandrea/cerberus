@@ -152,4 +152,42 @@ class authControl extends Control {
         $this->commitReplace($user['message'], '#alert', false);
     }
 
+    /**
+     * Rest Handler for updating user data
+     *
+     * @param   array               $userData       - The user data
+     * @param   bool                $uid            - The user UID
+     * @return  array|string
+     */
+    public function updateUser(array $userData = array(), $uid = false) {
+
+        $uid || $uid = $this->getPost('uid');
+        if (count($userData) == 0) {
+            $userData = array(
+                'name'  => $this->getPost('name'),
+                'email' => $this->getPost('email'),
+                'image' => $this->getPost('image')
+            );
+        }
+
+        $this->model('auth')->updateUser($userData, $uid);
+
+        if (!$this->model('auth')->queryOk()) {
+            return RestServer::throwError(Language::QUERY_ERROR(), 500);
+        }
+
+        return RestServer::response(array(
+            'status'    => 200,
+            'uid'       => $uid,
+            'message'   => 'User updated!'
+        ), 200);
+
+    }
+
+    public function getTokenIsAlive() {
+        return RestServer::response(array(
+            'status'    => 200
+        ));
+    }
+
 }

@@ -168,7 +168,7 @@ class core {
      * @param   bool|string      $info   - The information ( false for full server information )
      * @return  bool
      */
-    public function getServerInfo($info = false) {
+    public static function getServerInfo($info = false) {
 
         if (!$info) return
             self::$server;

@@ -71,6 +71,13 @@ class Control {
     private $get;
 
     /**
+     * Thou shalt not call superglobals directly
+     *
+     * @var
+     */
+    private $put;
+
+    /**
      * The Object View
      *
      * @var View
@@ -99,6 +106,11 @@ class Control {
 
         $this->post = filter_input_array(INPUT_POST, FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
         $this->get  = filter_input_array(INPUT_GET,  FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
+
+        if (Core::getServerInfo('REQUEST_METHOD') == 'PUT') {
+            parse_str(file_get_contents("php://input"), $this->put);
+            $this->put = filter_var_array($this->put, FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
+        }
 
         $ref = new ReflectionClass($this);
         $this->moduleName = basename(dirname($ref->getFileName()));
