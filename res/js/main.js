@@ -98,18 +98,20 @@ Main.prototype = {
             if ($(this).attr('method') != undefined) {
                 method = $(this).attr('method');
             }
-            var changeUrl = $(this).attr('changeurl');
+
+            var changeUrl = $(this).attr('changeurl') != undefined;
+            var url = $(this).attr('action');
             if (method == 'post') {
                 Html.Post($(this).attr('action'), data.join('&'), function(r) {
                     eval(r);
-                    if (changeUrl) window.history.pushState(undefined, '', changeUrl);
+                    if (changeUrl) window.history.pushState(undefined, '', url);
                     return false;
                 });
             } else if (method == 'get') {
-                var url = $(this).attr('action') + '?' + data.join('&');
+                url = url + '?' + data.join('&');
                 Html.Get(url, function(r){
                     eval(r);
-                    if (changeUrl) window.history.pushState(undefined, '', changeUrl);
+                    if (changeUrl) window.history.pushState(undefined, '', url);
                     return false;
                 });
             }
