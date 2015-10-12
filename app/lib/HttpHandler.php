@@ -208,8 +208,8 @@ class HttpHandler {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
                 break;
             case 'PUT':
-                curl_setopt($ch, CURLOPT_PUT, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($this->params));
                 break;
             case 'DELETE':
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');

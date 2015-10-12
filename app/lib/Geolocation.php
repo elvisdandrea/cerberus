@@ -15,6 +15,8 @@ class Geolocation {
      */
     const API_URL = 'http://maps.googleapis.com/maps/api/geocode/json';
 
+    const IP_API = 'http://ip-api.com/json/';
+
     /**
      * Calls Google API
      *
@@ -88,5 +90,33 @@ class Geolocation {
             'lat' => array_key_exists(0, $results) ? (float) $results[0]->geometry->location->lat : null,
             'lng' => array_key_exists(0, $results) ? (float) $results[0]->geometry->location->lng : null
         );
+    }
+
+    /**
+     * Returns the location information from an IP
+     *
+     * @param   string          $ip     - The IP Address
+     * @return  array|mixed
+     */
+    public static function getLocationFromIP($ip) {
+
+        if (!filter_var($ip, FILTER_VALIDATE_IP))
+            return array('message' => 'Invalid IP');
+
+        $ch = curl_init(self::IP_API . $ip);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $result = curl_exec($ch);
+
+        return json_decode($result, true);
+    }
+
+    /**
+     * Returns the location information from page visitor
+     *
+     * @return array|mixed
+     */
+    public static function getVisitorLocation() {
+        return self::getLocationFromIP(Core::getRemoteAddress());
     }
 }
