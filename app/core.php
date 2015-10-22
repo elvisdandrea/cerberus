@@ -210,6 +210,17 @@ class core {
     }
 
     /**
+     * Sets a Response HTTP header
+     *
+     * @param   string      $header     - The header content
+     */
+    public static function setHttpHeader($header) {
+
+        //TODO: validate $header variable
+        header($header);
+    }
+
+    /**
      * Returns the user remote address
      *
      * @return mixed
