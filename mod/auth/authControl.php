@@ -101,8 +101,38 @@ class authControl extends Control {
         /**
          * Implement here your login page
          */
+        $this->view()->loadTemplate('login');
+        return $this->view()->render();
+    }
 
-        return '';
+    /**
+     * Form user login
+     *
+     * This authentication method requires
+     * user and password and will not generate
+     * access token or refresh token
+     */
+    public function login() {
+
+        if (!$this->validatePost('user', 'pass')) {
+            $this->commitReplace('You must fill user and password.', '#msgbox');
+            return;
+        }
+
+        $post   = $this->getPost();
+        $logged = $this->model('auth')->checkLogin($post['user'], $post['pass']);
+
+        if (!$logged) {
+            $this->commitReplace('Invalid user or password.', '#msgbox');
+            return;
+        }
+
+        UID::set('user', $this->model()->getRow(0));
+        UID::set('remote_address', Core::getRemoteAddress());
+
+        Html::refresh();
+        $this->terminate();
+
     }
 
     /**

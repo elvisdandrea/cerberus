@@ -238,7 +238,7 @@ class core {
     public static function isLoggedIn() {
 
         $uid = Session::get('uid');
-        return is_array($uid) && isset($uid['db_connection']);
+        return is_array($uid) && isset($uid['user']);
     }
 
     /**
