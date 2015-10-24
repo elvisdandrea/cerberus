@@ -42,11 +42,11 @@ class UID {
                 }
             }
         } else {
-            return Session::get(defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID);
+            return Session::get((defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID));
         }
         if (!empty($session)) {
-            eval('!isset($_SESSION["' . defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID . '"]' . $session .
-            ') || $value = $_SESSION["' . defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID . '"]' . $session . ';');
+            eval('!isset($_SESSION["' . (defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID) . '"]' . $session .
+            ') || $value = $_SESSION["' . (defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID) . '"]' . $session . ';');
         }
         return $value;
     }
@@ -81,7 +81,7 @@ class UID {
             if (is_object($value)) {
                 $value = serialize($value);
             }
-            eval('$_SESSION["' . defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID . '"]' . $session . ' = $value;');
+            eval('$_SESSION["' . (defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID) . '"]' . $session . ' = $value;');
         }
     }
 
@@ -107,7 +107,7 @@ class UID {
             Session::del('uid');
         }
         if (!empty($session)) {
-            eval('unset($_SESSION["' . defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID . '"]' . $session . ');');
+            eval('unset($_SESSION["' . (defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID) . '"]' . $session . ');');
         }
         return $value;
     }
