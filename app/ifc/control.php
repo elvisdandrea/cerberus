@@ -102,7 +102,7 @@ class Control {
      * Thou shalt not call superglobals directly
      * even though I'm doing it in this function
      */
-    public function __construct() {
+    public function __construct($template = false, $login_uid = false) {
 
         $this->post = filter_input_array(INPUT_POST, FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
         $this->get  = filter_input_array(INPUT_GET,  FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
@@ -111,6 +111,9 @@ class Control {
             parse_str(file_get_contents("php://input"), $this->put);
             $this->put = filter_var_array($this->put, FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
         }
+
+        !$template  || define('CONTROLLER_TEMPLATE', $template);
+        !$login_uid || define('CONTROLLER_UID', $login_uid);
 
         $ref = new ReflectionClass($this);
         $this->moduleName = basename(dirname($ref->getFileName()));

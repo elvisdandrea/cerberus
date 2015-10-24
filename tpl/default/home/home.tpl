@@ -29,8 +29,4 @@
             </div>
         </div>
     </body>
-    <script src="{$smarty.const.JSURL}/jquery.js"></script>
-    <script src="{$smarty.const.JSURL}/md5.js"></script>
-    <script src="{$smarty.const.JSURL}/html.js"></script>
-    <script src="{$smarty.const.JSURL}/main.js"></script>
 </html>

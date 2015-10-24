@@ -61,6 +61,7 @@ class homeControl extends Control {
 
         $content = Core::getMethodContent($uri);
         $this->view()->setVariable('page_content', $content);
+        $this->view()->appendSystemJs();
 
         /**
          * A few usage examples
@@ -79,7 +80,9 @@ class homeControl extends Control {
 
         echo $this->view()->render();
 
-        echo Core::getController()->view()->injectJSFiles();
+        if (Core::getController())
+            echo Core::getController()->view()->injectJSFiles();
+
         $this->terminate();
     }
 

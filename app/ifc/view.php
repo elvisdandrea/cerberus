@@ -64,6 +64,14 @@ class View {
     private $jsFiles = array();
 
     /**
+     * If this request must append
+     * the system JS files
+     *
+     * @var bool
+     */
+    private $systemJs = false;
+
+    /**
      * When you need to append a generic template Javascript to the committed HTML
      *
      * @var array
@@ -80,7 +88,7 @@ class View {
      */
     public function __construct() {
 
-        $this->setTemplateName(TEMPLATE);      //The default Template Name
+        $this->setTemplateName(defined('CONTROLLER_TEMPLATE') ? CONTROLLER_TEMPLATE : TEMPLATE);      //The Template Name
         $this->smarty = new Smarty();
         $this->smarty->setTemplateDir(TPLDIR . '/' . $this->templateName);
         $this->smarty->setCompileDir(IFCDIR . '/cache');
@@ -104,9 +112,17 @@ class View {
      * @return string
      */
     public function injectJSFiles() {
-        if (count($this->jsFiles) == 0 && count($this->templateJsFiles) == 0) return '';
+
+        if (count($this->jsFiles) == 0 && count($this->templateJsFiles) == 0 && !$this->systemJs) return '';
 
         $result = array();
+
+        if ($this->systemJs) {
+            $result[] = '<script src="'. JSURL . '/jquery.js"></script>';
+            $result[] = '<script src="'. JSURL . '/md5.js"></script>';
+            $result[] = '<script src="'. JSURL . '/html.js"></script>';
+            $result[] = '<script src="'. JSURL . '/main.js"></script>';
+        }
 
         foreach ($this->jsFiles as $jsFileName) {
             $jsFileName =  T_URL. '/' . $this->moduleName . '/js/' . $jsFileName . '.js';
@@ -139,6 +155,10 @@ class View {
      */
     public function appendTemplateJs($jsFile) {
         $this->templateJsFiles[] = $jsFile;
+    }
+
+    public function appendSystemJs() {
+        $this->systemJs = true;
     }
 
     /**
@@ -280,7 +300,7 @@ class View {
                 if    (Core::isAjax()) echo $setTitle;
             }
 
-            $hasJs = (count($this->jsFiles) > 0 || count($this->templateJsFiles) > 0);
+            $hasJs = (count($this->jsFiles) > 0 || count($this->templateJsFiles) > 0) || $this->systemJs;
             return $this->smarty->$method($this->template) . ($hasJs ? $this->injectJSFiles() : '');
         } catch (Exception $e) {
             echo Html::ReplaceHtml(ExceptionHandler::throwException(array(

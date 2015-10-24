@@ -407,6 +407,8 @@ class core {
          */
         if (!$this->isAjax()) {
 
+            if (count($uri) > 0) Services::get($uri[0]); // pre-load Module into Dependency Injection
+
             $this->controller = $this->requireHome();
             if (self::isLoggedIn())
                 $this->controller->newModel('uid');

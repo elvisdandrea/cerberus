@@ -23,6 +23,13 @@
  * code your action without having to include/require any file, handle errors or
  * create an over-engineered process that's for nothing other than create shitty stuff.
  *
+ * In addition, it's a backend-based SPA framework, and it will do it automatically.
+ * Add the attribute "changeurl" to the links you need to follow the URL and suppress
+ * on those you want to be an internal function.
+ *
+ * The system will render the page automatically when an internal URL is called in browser,
+ * you don't have to add code to do it.
+ *
  * @author: Elvis D'Andrea
  * @email:  <elvis.vista@gmail.com>
  */
@@ -65,11 +72,13 @@ define('RESTFUL', '0');                         // If attends to ReSTful request
 
 define('HOME', 'home');                         // Home Sweet Home - The module name to be used as home module
 define('MAIN', 'home');                         // The well known Main() - the bootstrap function after core loading
+
 define('AUTH', 'auth');                         // The module to be used as authentication module
-define('TEMPLATE', 'default');                  // The view template
+define('TEMPLATE', 'default');                  // The default views template
 define('APPTITLE', ' - The fastest backend SPA'); // Define the static portion of page title here
 
 define('REQUIRE_LOGIN', '0');                   // If this framework should require a logged user
+define('LOGIN_UID',   'uid');                   // The register position of the login uid
 
 define('LNG', 'pt');                            // Site Language
 

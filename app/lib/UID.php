@@ -18,7 +18,7 @@ class UID {
      */
     public static function isLoggedIn() {
 
-        $uid = Session::get('uid');
+        $uid = Session::get(defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID);
         return is_array($uid) && isset($uid['db_connection']);
     }
 
@@ -42,10 +42,11 @@ class UID {
                 }
             }
         } else {
-            return Session::get('uid');
+            return Session::get(defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID);
         }
         if (!empty($session)) {
-            eval('!isset($_SESSION["uid"]' . $session . ') || $value = $_SESSION["uid"]' . $session . ';');
+            eval('!isset($_SESSION["' . defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID . '"]' . $session .
+            ') || $value = $_SESSION["' . defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID . '"]' . $session . ';');
         }
         return $value;
     }
@@ -80,7 +81,7 @@ class UID {
             if (is_object($value)) {
                 $value = serialize($value);
             }
-            eval('$_SESSION["uid"]' . $session . ' = $value;');
+            eval('$_SESSION["' . defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID . '"]' . $session . ' = $value;');
         }
     }
 
@@ -106,7 +107,7 @@ class UID {
             Session::del('uid');
         }
         if (!empty($session)) {
-            eval('unset($_SESSION["uid"]' . $session . ');');
+            eval('unset($_SESSION["' . defined('CONTROLLER_UID') ? CONTROLLER_UID : LOGIN_UID . '"]' . $session . ');');
         }
         return $value;
     }
