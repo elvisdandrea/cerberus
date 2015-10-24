@@ -99,10 +99,23 @@ class Control {
     private $moduleName;
 
     /**
-     * Thou shalt not call superglobals directly
-     * even though I'm doing it in this function
+     * Override your controller constructor passing literal
+     * values matching the parameters you need
+     *
+     * an example:
+     *
+     * parent::__construct('panel_template', 'panel_uid', 'panel');
+     *
+     * this means that the controllers with this constructor will use a different template,
+     * and also will require a different login from the default as well as authenticate
+     * the user in a different controller and method
+     *
+     *
+     * @param   bool|string      $template           - The template name
+     * @param   bool|string      $login_uid          - The identifier for registering user logged in
+     * @param   bool|string      $auth_controller    - Which controller has the login method for your controller
      */
-    public function __construct($template = false, $login_uid = false) {
+    public function __construct($template = false, $login_uid = false, $auth_controller = false) {
 
         $this->post = filter_input_array(INPUT_POST, FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
         $this->get  = filter_input_array(INPUT_GET,  FILTER_SANITIZE_MAGIC_QUOTES, FILTER_SANITIZE_URL);
@@ -114,6 +127,7 @@ class Control {
 
         !$template  || define('CONTROLLER_TEMPLATE', $template);
         !$login_uid || define('CONTROLLER_UID', $login_uid);
+        !$auth_controller || define('AUTH_CONTROLLER', $auth_controller);
 
         $ref = new ReflectionClass($this);
         $this->moduleName = basename(dirname($ref->getFileName()));

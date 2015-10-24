@@ -360,9 +360,10 @@ class core {
     private function checkAuthenticated(array $uri) {
 
         if (self::isLoggedIn()) return;
+        $auth = (defined('AUTH_CONTROLLER') ? AUTH_CONTROLLER : AUTH);
         // TODO: Refractor me, for the lord's sake
         if ($this->isAjax()) {
-            if (count($uri) == 0 || !($uri[0] == 'auth' && $uri[1] == 'login')) {
+            if (count($uri) == 0 || !($uri[0] == $auth && $uri[1] == 'login')) {
                 Html::refresh();
                 $this->terminate();
             }
