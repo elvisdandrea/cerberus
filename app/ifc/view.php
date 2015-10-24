@@ -64,6 +64,13 @@ class View {
     private $jsFiles = array();
 
     /**
+     * When you need to execute Javascript functions with specified parameters
+     *
+     * @var
+     */
+    private $jsFunctions = array();
+
+    /**
      * If this request must append
      * the system JS files
      *
@@ -113,7 +120,10 @@ class View {
      */
     public function injectJSFiles() {
 
-        if (count($this->jsFiles) == 0 && count($this->templateJsFiles) == 0 && !$this->systemJs) return '';
+        if (count($this->jsFiles) == 0 &&
+            count($this->templateJsFiles) == 0 &&
+            count($this->jsFunctions) == 0 &&
+            !$this->systemJs) return '';
 
         $result = array();
 
@@ -132,6 +142,10 @@ class View {
         foreach ($this->templateJsFiles as $jsFileName) {
             $jsFileName =  T_JSURL . '/' . $jsFileName . '.js';
             $result[] = '<script src="'. $jsFileName. '"></script>';
+        }
+
+        foreach ($this->jsFunctions as $jsFunction) {
+            $result[] = '<script>' . $jsFunction . '</script>';
         }
 
         return implode(' ', $result);
@@ -157,8 +171,27 @@ class View {
         $this->templateJsFiles[] = $jsFile;
     }
 
+    /**
+     * Set to append SPA required JS
+     */
     public function appendSystemJs() {
         $this->systemJs = true;
+    }
+
+    /**
+     * Adds a JS function to be executed with
+     * specified parameters
+     *
+     * @param   string      $name       - The function name
+     * @param   array       $params     - Function parameters values
+     */
+    public function appendJsFunction($name, array $params = array()) {
+
+        array_walk($params, function(&$item){
+            $item = '\'' . String::buildStringNewLines($item) . '\'';
+        });
+
+        $this->jsFunctions[] = $name . '(' . implode(',', $params) . ');';
     }
 
     /**
@@ -300,7 +333,7 @@ class View {
                 if    (Core::isAjax()) echo $setTitle;
             }
 
-            $hasJs = (count($this->jsFiles) > 0 || count($this->templateJsFiles) > 0) || $this->systemJs;
+            $hasJs = (count($this->jsFiles) > 0 || count($this->templateJsFiles) > 0) || $this->systemJs || count($this->jsFunctions) > 0;
             return $this->smarty->$method($this->template) . ($hasJs ? $this->injectJSFiles() : '');
         } catch (Exception $e) {
             echo Html::ReplaceHtml(ExceptionHandler::throwException(array(
