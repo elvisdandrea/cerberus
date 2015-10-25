@@ -365,6 +365,30 @@ class Control {
     }
 
     /**
+     * Adds a class to an element
+     *
+     * @param   string      $class      - The class name to add
+     * @param   string      $block      - The element
+     * @param   bool        $stay
+     */
+    protected function commitAddClass($class, $block, $stay = true) {
+        echo Html::AddClass($class, $block);
+        $stay || $this->terminate();
+    }
+
+    /**
+     * Removes a class from an element
+     *
+     * @param   string      $class      - The class name to add
+     * @param   string      $block      - The element
+     * @param   bool        $stay
+     */
+    protected function commitRemoveClass($class, $block, $stay = true) {
+        echo Html::RemoveClass($class, $block);
+        $stay || $this->terminate();
+    }
+
+    /**
      * Hides a element
      *
      * @param   string      $block  - The element
