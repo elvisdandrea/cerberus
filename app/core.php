@@ -370,6 +370,7 @@ class core {
         } else {
             $authControl = new authControl();
             echo $authControl->loginPage();
+            echo $authControl->view()->injectJSFiles();
             $this->terminate();
         }
     }
