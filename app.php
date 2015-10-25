@@ -79,6 +79,7 @@ define('APPTITLE', ' - The fastest backend SPA'); // Define the static portion o
 
 define('REQUIRE_LOGIN', '0');                   // If this framework should require a logged user
 define('LOGIN_UID',   'uid');                   // The register position of the login uid
+define('SYSTEM_HASH', 'M4k3Y0R0WN');            // Please create your own encryption hash
 
 define('LNG', 'pt');                            // Site Language
 

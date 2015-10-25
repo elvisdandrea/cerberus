@@ -263,7 +263,7 @@ class core {
      */
     public static function runMethod($uri) {
 
-        if (count($uri) < 1 || $uri[0] == '') return;
+        if (count($uri) < 1 || $uri[0] == '') $uri = array(HOME);
 
         $module = $uri[0].'Control';
         $id     = intval($uri[1]) > 0 ? intval($uri[1]) : 0;

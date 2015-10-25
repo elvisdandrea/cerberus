@@ -80,9 +80,10 @@ class homeControl extends Control {
 
         echo $this->view()->render();
 
-        if (Core::getController())
+        if (Core::getController()) {
+            Core::getController()->view()->appendSystemJs();
             echo Core::getController()->view()->injectJSFiles();
-
+        }
         $this->terminate();
     }
 

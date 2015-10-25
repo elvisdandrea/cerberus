@@ -823,7 +823,11 @@ class Model {
      */
     protected function getUpdateQuery($safe = true) {
         if ($safe && count($this->updatewhere) == 0) return '';
-        $query = 'UPDATE ' . $this->updatetable . ' SET ' . implode(',', $this->updateset);
+
+        $updateSet = array();
+        foreach ($this->updateset as $field => $value) $updateSet[] = $field . ' = ' . $value;
+
+        $query = 'UPDATE ' . $this->updatetable . ' SET ' . implode(',', $updateSet);
         if (count($this->updatewhere) > 0) {
             $query .= ' WHERE (1) ' . (count($this->updatewhere) > 0 ? ' AND ' . implode(' ', $this->updatewhere) : '');
         }
@@ -847,16 +851,14 @@ class Model {
     /**
      * Adds a SET for UPDATE queries
      *
-     * @param   string      $set        - The field and value
+     * @param   string      $field      - The field
+     * @param   string      $value      - The Value
+     * @param   bool        $quoted     - If the value must be quoted
      */
-    protected function addUpdateSet($set) {
-        if (is_array($set)) {
-            foreach ($set as $field => $value) {
-                $this->updateset[] = $field . '=' . utf8_encode($value);
-            }
-        } else {
-            $this->updateset[] = $set;
-        }
+    protected function addUpdateSet($field, $value, $quoted = true) {
+
+        !$quoted || $value = '"' . $value . '"';
+        $this->updateset[$field] = $value;
     }
 
     /**

@@ -32,15 +32,15 @@ class Services {
 
         if (isset(self::$services[$service])) return self::$services[$service];
 
-        if (class_exists($service)) {
-            self::$services[$service] = new $service();
-            return self::$services[$service];
-        }
-
         $class = $service . 'Control';
 
         if (class_exists($class)) {
             self::$services[$service] = new $class();
+            return self::$services[$service];
+        }
+
+        if (class_exists($service)) {
+            self::$services[$service] = new $service();
             return self::$services[$service];
         }
 

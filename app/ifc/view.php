@@ -334,7 +334,7 @@ class View {
             }
 
             $hasJs = (count($this->jsFiles) > 0 || count($this->templateJsFiles) > 0) || $this->systemJs || count($this->jsFunctions) > 0;
-            return $this->smarty->$method($this->template) . ($hasJs ? $this->injectJSFiles() : '');
+            return $this->smarty->$method($this->template) . (Core::isAjax() && $hasJs ? $this->injectJSFiles() : '');
         } catch (Exception $e) {
             echo Html::ReplaceHtml(ExceptionHandler::throwException(array(
                 'message'  => $e->getMessage(),
