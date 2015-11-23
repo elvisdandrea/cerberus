@@ -418,6 +418,30 @@ class String {
     }
 
     /**
+     * Generates numeric intervals between 2 numbers
+     * with a gap of specific percentage
+     *
+     * @param   $min            - min value
+     * @param   $max            - max value
+     * @param   $percentage     - gap percentage (% of (min - max) for each value)
+     * @return  array
+     */
+    public static function generateIntervals($min, $max, $percentage) {
+
+        $interval = ((($max - $min) * $percentage) / 100);
+        $start  = 1;
+        $result = array();
+        $result[] = $min;
+        while ($min < $max) {
+            $result[] = $min + $interval;
+            $min += $interval;
+            $start++;
+        }
+
+        return $result;
+    }
+
+    /**
      * Converts CameCase text to Uppercase-First-Letter words
      *
      * @param   string      $word           - The CamelCased Text

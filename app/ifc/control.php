@@ -314,15 +314,19 @@ class Control {
     }
 
     /**
-     * Renders a HTML onto screen
+     * Renders an HTML replacing
+     * the content of an element
      *
-     * Still to be implemented
+     * this function will wrap the result
+     * in script tag in case we're not in ajax request
      *
-     * @param $html
+     * @param   string      $html       - The HTML
+     * @param   string      $block      - The element to render
+     * @param   bool        $stay       - If it should not finish execution after rendering
      */
-    protected function commitPrint($html) {
-        echo $html;
-        $this->terminate();
+    protected function commitPrint($html, $block, $stay = true) {
+        echo Html::renderHtml($html, $block);
+        $stay || $this->terminate();
     }
 
     /**
@@ -396,6 +400,19 @@ class Control {
      */
     protected function commitHide($block, $stay = true) {
         echo Html::HideHtml($block);
+        $stay || $this->terminate();
+    }
+
+    /**
+     * Sets an element value
+     *
+     * @param   string      $block  - The element
+     * @param   string      $value  - The value to set
+     * @param   bool        $stay   - If it should not finish execution after rendering
+     */
+    protected function commitSetValue($block, $value, $stay = true) {
+
+        echo Html::SetValue($value, $block);
         $stay || $this->terminate();
     }
 
