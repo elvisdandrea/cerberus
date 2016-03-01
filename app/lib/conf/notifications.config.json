@@ -1,0 +1,21 @@
+{
+    "ios" : {
+        "url" : "gateway.push.apple.com",
+        "type" : "websocket",
+        "protocol" : "ssl",
+        "port" : "2195",
+        "options" : {
+            "local_cert" : "app/lib/cert/apns-prod.pem",
+            "passphrase" : "yourpassphrase"
+        }
+    },
+    "android" : {
+        "url" : "https://android.googleapis.com/gcm/send",
+        "key" : "yourkey",
+        "type" : "post",
+        "protocol" : "https",
+        "options" : {
+            "Content-type" : "application/json"
+        }
+    }
+}
