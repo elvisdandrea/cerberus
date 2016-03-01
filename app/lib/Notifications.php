@@ -155,10 +155,10 @@ class Notifications {
         $data = array();
 
         !$message ||
-            $data['message'] = $message;
+        $data['message'] = $message;
 
         count($customInfo) == 0 ||
-            $data = array_merge($data, $customInfo);
+        $data = array_merge($data, $customInfo);
 
         $this->pushData['android'] = $data;
     }
@@ -179,15 +179,15 @@ class Notifications {
         );
 
         !$alert ||
-            $options['alert'] = $alert;
+        $options['alert'] = $alert;
 
         $content = array();
 
         !$message ||
-            $content['message'] = $message;
+        $content['message'] = $message;
 
         count($customInfo) == 0 ||
-            $content = array_merge($content, $customInfo);
+        $content = array_merge($content, $customInfo);
 
         $data = array_merge($content, $options);
 
@@ -250,17 +250,18 @@ class Notifications {
         $config = $this->config['android'];
 
         if (!isset($this->pushList['android']) ||
-                count($this->pushList['android']) == 0) return;
+            count($this->pushList['android']) == 0) return;
 
         if (!isset($this->pushData['android']) ||
-                count($this->pushData['android']) == 0) return;
+            count($this->pushData['android']) == 0) return;
 
         $body = array(
-            'ids'   => $this->pushList['android'],
-            'data'  => $this->pushData['android']
+            'registration_ids'  => $this->pushList['android'],
+            'data'              => $this->pushData['android']
         );
 
         $http = HttpHandler::Create($config['url'], 'post');
+        if ($config['protocol'] == 'https') $http->setSSL(true);
 
         foreach ($config['options'] as $option => $value)
             $http->addHeader($option, $value);
