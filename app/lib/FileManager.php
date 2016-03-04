@@ -1,9 +1,14 @@
 <?php
 
 /**
- * File Manager Class
+ * Class FileManager
+ *
+ * The File Manager Class
  *
  * Manipulation of System Directories and files
+ *
+ * @author: Elvis D'Andrea
+ * @email: elvis.gravi@gmail.com
  */
 class FileManager {
 
