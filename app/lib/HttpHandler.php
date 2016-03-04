@@ -1,12 +1,9 @@
 <?php
 /**
  * Class        HttpHandler
- * @package     Rest\RestBundle\Handler
+ *
  * @author      Elvis D'Andrea
- * @email       elvis@vistasoft.com.br
- *
- *
- *
+ * @email       elvis.gravi@gmail.com
  */
 class HttpHandler {
 
@@ -40,6 +37,13 @@ class HttpHandler {
      * @var array
      */
     private $headers = array();
+
+    /**
+     * Request content type
+     *
+     * @var string
+     */
+    private $contentType = 'form';
 
     /**
      * Request Errors
@@ -88,7 +92,7 @@ class HttpHandler {
     public function setMethod($method) {
         $validate = array('GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'UPDATE');
         if (!in_array(strtoupper($method), $validate))
-            $this->errors['EXTERNAL_REQUEST_INVALID_METHOD'] = 'Desculpe, uma execução do servidor não foi correta. Contate o suporte da Vista e informe EXTERNAL_REQUEST_INVALID_METHOD';
+            $this->errors[] = 'Invalid HTTP Method "' . $method . '"';
 
         $this->method = strtoupper($method);
     }
@@ -127,6 +131,31 @@ class HttpHandler {
     public function setURL($url) {
 
         $this->url = $url;
+    }
+
+    /**
+     * Defines the content body
+     *
+     * @param $params
+     */
+    public function setBody($params) {
+
+        $this->params = $params;
+    }
+
+    public function setContentType($ContentType) {
+
+        $types = array(
+            'json', 'xml', 'form'
+        );
+
+        if (!in_array($ContentType, $types)) {
+            $this->errors[] = 'Invalid Content Type "' . $ContentType . '". Must be [ json | xml | form ]';
+            return;
+        }
+
+        $this->contentType = $ContentType;
+
     }
 
     /**
@@ -200,6 +229,14 @@ class HttpHandler {
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         }
 
+        switch ($this->contentType) {
+            case 'json' :
+                $this->params = json_encode($this->params);
+                break;
+            case 'xml' :
+                break;
+        }
+
         switch ($this->method) {
             case 'GET':
                 break;
@@ -232,11 +269,18 @@ class HttpHandler {
 
         $this->content = curl_exec($ch);
 
+        switch ($this->contentType) {
+            case 'json' :
+                $this->content = json_decode($this->content, true);
+                break;
+            case 'xml' :
+                break;
+        }
+
         if (!$this->content)
             $this->errors['EXTERNAL_REQUEST_EXECUTE_ERROR'] = curl_error($ch);
 
         curl_close($ch);
-
 
     }
 
