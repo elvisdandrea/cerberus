@@ -119,4 +119,36 @@ class Geolocation {
     public static function getVisitorLocation() {
         return self::getLocationFromIP(Core::getRemoteAddress());
     }
+
+    /**
+     * Calculate the distance from two Geolocations
+     *
+     * @param   int     $lat1       - Latitude of first location
+     * @param   int     $lon1       - Longitude of first location
+     * @param   int     $lat2       - Latitude of second location
+     * @param   int     $lon2       - Longitude of second location
+     * @param   string  $unit       - Unit [ k = Kilometers | M = Miles | N = Nautical Miles ]
+     * @return  float
+     */
+    public static function distance($lat1, $lon1, $lat2, $lon2, $unit = 'K') {
+
+        $theta = $lon1 - $lon2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+
+        if ($unit == 'K') {
+            return ($miles * 1.609344);
+        }
+
+        if ($unit == 'N') {
+            return ($miles * 0.8684);
+        }
+
+        return $miles;
+
+    }
+    
 }
