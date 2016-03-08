@@ -54,6 +54,7 @@ class homeControl extends Control {
      */
     public function itStarts($uri = array()) {
 
+
         $this->view()->loadTemplate('home');
 
         if (count($uri) == 0)
