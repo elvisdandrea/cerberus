@@ -1,6 +1,8 @@
 {
     "merchantId"        : "6f80cf28-2ede-402e-9573-c23d1aa73abc",
     "merchantKey"       : "KHPSYAVXLPKHSLJGZFRPHNFCMAVXJXHJWAKJGKPG",
+    "sandboxId"         : "6f80cf28-2ede-402e-9573-c23d1aa73abc",
+    "sandboxKey"        : "KHPSYAVXLPKHSLJGZFRPHNFCMAVXJXHJWAKJGKPG",
     "checkoutUrl"       : "https://cieloecommerce.cielo.com.br/api/public/v1/orders",
     "apiUrl"            : "https://api.cieloecommerce.cielo.com.br/",
     "queryUrl"          : "https://apiquery.cieloecommerce.cielo.com.br/",

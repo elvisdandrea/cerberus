@@ -21,7 +21,7 @@ class CieloCheckout {
      *           "checkoutUrl"   : "https://cieloecommerce.cielo.com.br/api/public/v1/orders"
      *       }
      */
-    const CNFG_FILE         = 'cielo.conf.json';
+    const CNFG_FILE         = 'conf/cielo.conf-3.json';
 
     /**
      * The Cielo Merchant ID

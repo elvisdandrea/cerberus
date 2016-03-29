@@ -1,0 +1,11 @@
+{
+    "merchantId"        : "1006993069",
+    "merchantKey"       : "25fbb99741c739dd84d7b06ec78c9bac718838630f30b112d033ce2e621b34f3",
+    "sandboxId"         : "1006993069",
+    "sandboxKey"        : "25fbb99741c739dd84d7b06ec78c9bac718838630f30b112d033ce2e621b34f3",
+    "checkoutUrl"       : "https://cieloecommerce.cielo.com.br/api/public/v1/orders",
+    "apiUrl"            : "https://qaseCommerce.cielo.com.br/servicos/ecommwsec.do",
+    "queryUrl"          : "https://qaseCommerce.cielo.com.br/servicos/ecommwsec.do",
+    "sandboxUrl"        : "https://qaseCommerce.cielo.com.br/servicos/ecommwsec.do",
+    "querySandboxUrl"   : "https://qaseCommerce.cielo.com.br/servicos/ecommwsec.do"
+}

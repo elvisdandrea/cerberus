@@ -150,5 +150,5 @@ class Geolocation {
         return $miles;
 
     }
-    
+
 }

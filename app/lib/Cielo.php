@@ -6,6 +6,8 @@
  * This class generates the body of the request for
  * integrating with Cielo Webservice 3 API
  *
+ * Legacy Support for version 1.5
+ *
  * @author  Elvis D'Andrea
  * @email   elvis.gravi@gmail.com
  */
@@ -21,7 +23,13 @@ class CieloClient {
      *           "checkoutUrl"   : "https://cieloecommerce.cielo.com.br/api/public/v1/orders"
      *       }
      */
-    const CNFG_FILE         = 'conf/cielo.conf.json';
+    const CNFG_FILE         = 'conf/cielo.conf-3.json';
+
+    /**
+     * The json with the information for
+     * accessing the Legacy 1.5 API
+     */
+    const CNFG_FILE_LEGACY  = 'conf/cielo.conf-1.5.json';
 
     /**
      * The Cielo Merchant ID
@@ -36,6 +44,20 @@ class CieloClient {
      * @var string
      */
     private $merchantKey    = '';
+
+    /**
+     * The Cielo Merchant ID for test environment
+     *
+     * @var string
+     */
+    private $sandboxId      = '';
+
+    /**
+     * The Cielo Merchant ID for test environment
+     *
+     * @var string
+     */
+    private $sandboxKey     = '';
 
     /**
      * The Cielo Checkout API URL
@@ -141,6 +163,8 @@ class CieloClient {
         'Monthly', 'Bimonthly', 'Quarterly', 'SemiAnnual', 'Annual'
     );
 
+    private $apiVersion = '3';
+
     /**
      * The constructor basically
      * loads the configuration
@@ -148,10 +172,11 @@ class CieloClient {
      * Any other action must be executed from
      * The object instance
      */
-    public function __construct($sandbox = false) {
+    public function __construct($sandbox = false, $apiVersion = '3') {
 
+        $this->sandbox    = $sandbox;
+        $this->apiVersion = $apiVersion;
         $this->loadMerchantInformation();
-        $this->sandbox = $sandbox;
     }
 
     /**
@@ -162,7 +187,7 @@ class CieloClient {
      */
     private function loadMerchantInformation() {
 
-        $configFile = filter_input(INPUT_SERVER, 'DOCUMENT_ROOT') . '/classes/' . self::CNFG_FILE;
+        $configFile = filter_input(INPUT_SERVER, 'DOCUMENT_ROOT') . '/classes/' . ($this->apiVersion == '1.5' ? self::CNFG_FILE_LEGACY : self::CNFG_FILE);
 
         if (!is_file($configFile)) {
             $this->errors[] = 'Merchant Configuration File Missing';
@@ -178,7 +203,7 @@ class CieloClient {
         }
 
         $requiredInfo = array(
-            'merchantId', 'merchantKey', 'apiUrl', 'sandboxUrl'
+            'merchantId', 'merchantKey', 'sandboxId', 'sandboxKey', 'apiUrl', 'sandboxUrl'
         );
 
         array_walk($configData, function($item, $key) use ($requiredInfo) {
@@ -548,11 +573,23 @@ class CieloClient {
      */
     private function getHeaders() {
 
-        return array(
-            'MerchantId:'   . $this->merchantId,
-            'MerchantKey:'  . $this->merchantKey,
-            'Content-type:' . 'application/json'
-        );
+        $contentType = $this->apiVersion == '1.5' ? 'application/x-www-form-urlencoded' : 'application/json';
+
+        switch ($this->apiVersion) {
+            case '1.5':
+                return array(
+                    'Content-type:' . $contentType
+                );
+                break;
+            case '3':
+            default :
+                return array(
+                    'MerchantId:'   . $this->merchantId,
+                    'MerchantKey:'  . $this->merchantKey,
+                    'Content-type:' . 'application/json'
+                );
+                break;
+        }
     }
 
     /**
@@ -568,7 +605,7 @@ class CieloClient {
             $this->errors[] = 'The configuration URL in configuration file is malformed or missing: "' . $this->apiUrl . '"';
 
         if (empty($this->merchantId) ||
-            strlen($this->merchantId) < 36)
+            (strlen($this->merchantId) < 36 && $this->apiVersion == '3') )
             $this->errors[] = 'The configured Merchant ID in configuration file is incorrect or missing: "'. $this->merchantId .'"';
 
         //TODO: validate required fields
@@ -603,7 +640,28 @@ class CieloClient {
      */
     public function processPayment() {
 
-        return $this->request('/1/sales');
+        $method = $this->apiVersion == '1.5' ? '' : '/1/sales';
+        return $this->request($method);
+    }
+
+    /**
+     * Generates the Data according to API Version
+     *
+     * @return string
+     */
+    private function generateData() {
+
+        switch ($this->apiVersion) {
+            case '1.5':
+                return http_build_query(array('mensagem' => $this->apiXmlData()));
+                break;
+            case '3' :
+                return json_encode($this->jsonData);
+                break;
+            default :
+                return json_encode($this->jsonData);
+                break;
+        }
     }
 
     /**
@@ -631,18 +689,105 @@ class CieloClient {
         curl_setopt($ch, CURLOPT_SSLVERSION , 1);
 
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->jsonData));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->generateData());
 
         curl_setopt($ch, CURLOPT_VERBOSE, true);
 
         $response   = curl_exec($ch);
         $this->info = curl_getinfo($ch);
 
-        $this->response = json_decode($response, true);
+        $this->processResponse($response);
         if (!$this->response) $this->response = curl_error($ch);
 
         return $this->response;
 
+    }
+
+    /**
+     * Process API response to Array
+     * according to API version
+     *
+     * @param $response
+     */
+    private function processResponse($response) {
+
+        switch ($this->apiVersion) {
+            case '1.5':
+                $xml   = simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA);
+                $json  = json_encode($xml);
+                $this->response = json_decode($json, true);
+                break;
+            case '3':
+                $this->response = json_decode($response, true);
+                break;
+            default:
+                $this->response = json_decode($response, true);
+                break;
+        }
+    }
+
+
+    /**
+     * Generates the legacy API XML (API version 1.5)
+     *
+     * @return string
+     */
+    private function apiXmlData() {
+
+        $cardType =  isset($this->jsonData['Payment']['DebitCard']) ? 'DebitCard' : 'CreditCard';
+        $product  = '1';
+
+        if ($cardType == 'CreditCard') {
+            if ($this->jsonData['Payment']['Installments'] > 1) $product = '2';
+        } else {
+            $product = 'A';
+        }
+
+        $authorize = isset($this->jsonData['Payment']['RecurrentPayment']) ? '4' : '1';
+
+        $cardValidDate = explode('/', $this->jsonData['Payment'][$cardType]['ExpirationDate']);
+        $cardValidDate = $cardValidDate[1] . $cardValidDate[0];
+
+        $currencies = array(
+            'BRL'   => 986
+        );
+
+        $paymentCurrency =  $this->jsonData['Payment']['Currency'];
+        $currency = isset($currencies[$paymentCurrency]) ? $currencies[$paymentCurrency] : 986;
+
+        /**
+         * Unfortunately, this is the simplest way to generate the request body
+         */
+        $xml = '<?xml version="1.0" encoding="ISO-8859-1"?>
+                <requisicao-transacao id="' . md5(date("YmdHisu")) . '" versao="1.2.1">
+                <dados-ec>
+                    <numero>' . ($this->sandbox ? $this->sandboxId  : $this->merchantId)  . '</numero>
+                    <chave>'  . ($this->sandbox ? $this->sandboxKey : $this->merchantKey) . '</chave>
+                </dados-ec>
+                <dados-portador>
+                    <numero>' . $this->jsonData['Payment'][$cardType]['CardNumber'] . '</numero>
+                    <validade>' . $cardValidDate . '</validade>
+                    <indicador>1</indicador>
+                    <codigo-seguranca>' . $this->jsonData['Payment'][$cardType]['SecurityCode'] . '</codigo-seguranca>
+                    <nome-portador>' . $this->jsonData['Payment'][$cardType]['Holder'] . '</nome-portador>
+                </dados-portador>
+                <dados-pedido>
+                    <numero>' . $this->jsonData['MerchantOrderId'] . '</numero>
+                    <valor>' . $this->jsonData['Payment']['Amount'] . '</valor>
+                    <moeda>' . $currency . '</moeda>
+                    <data-hora>' . date('Y-m-d') . 'T' . date('h:i:s') . '</data-hora>
+                </dados-pedido>
+                <forma-pagamento>
+                    <bandeira>' . strtolower($this->jsonData['Payment'][$cardType]['Brand']) . '</bandeira>
+                    <produto>'  . $product . '</produto>
+                    <parcelas>' . $this->jsonData['Payment']['Installments'] . '</parcelas>
+                </forma-pagamento>
+                <url-retorno>null</url-retorno>
+                <autorizar>' . $authorize . '</autorizar>
+                <capturar>false</capturar>
+                </requisicao-transacao>';
+
+        return $xml;
     }
 
 }
