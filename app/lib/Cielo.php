@@ -23,13 +23,13 @@ class CieloClient {
      *           "checkoutUrl"   : "https://cieloecommerce.cielo.com.br/api/public/v1/orders"
      *       }
      */
-    const CNFG_FILE         = 'conf/cielo.conf-3.json';
+    const CNFG_FILE         = 'cielo.conf-3.json';
 
     /**
      * The json with the information for
      * accessing the Legacy 1.5 API
      */
-    const CNFG_FILE_LEGACY  = 'conf/cielo.conf-1.5.json';
+    const CNFG_FILE_LEGACY  = 'cielo.conf-1.5.json';
 
     /**
      * The Cielo Merchant ID
@@ -163,7 +163,19 @@ class CieloClient {
         'Monthly', 'Bimonthly', 'Quarterly', 'SemiAnnual', 'Annual'
     );
 
-    private $apiVersion = '3';
+    /**
+     * Which API version to use
+     *
+     * @var string
+     */
+    private $apiVersion    = '3';
+
+    /**
+     * Current transaction id (API version 1.5)
+     *
+     * @var string
+     */
+    private $transactionId = '';
 
     /**
      * The constructor basically
@@ -713,9 +725,33 @@ class CieloClient {
 
         switch ($this->apiVersion) {
             case '1.5':
-                $xml   = simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA);
-                $json  = json_encode($xml);
-                $this->response = json_decode($json, true);
+                $xml      = simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA);
+                $json     = json_encode($xml);
+                $result   = json_decode($json, true);
+                $cardType = isset($this->jsonData['Payment']['DebitCard']) ? 'DebitCard' : 'CreditCard';
+
+                $this->response = array(
+                    'Payment' => array(
+                        'ServiceTaxAmount'  => $result['dados-pedido']['taxa-embarque'],
+                        'Interest'          => 'ByMerchant',
+                        'CreditCard'        => array(
+                            'CardNumber'        => $this->jsonData['Payment'][$cardType]['CardNumber'],
+                            'Holder'            => $this->jsonData['Payment'][$cardType]['Holder'],
+                            'Brand'             => $this->jsonData['Payment'][$cardType]['Brand']
+                        ),
+                        'Tid'               => $result['tid'],
+                        'PaymentId'         => $result['@attributes']['id'],
+                        'Provider'          => '',
+                        'Type'              => $cardType,
+                        'Amount'            => $result['autorizacao']['valor'],
+                        'ReceivedDate'      => date('Y-m-d'),
+                        'Currency'          => $this->jsonData['Payment']['Currency'],
+                        'Country'           => '',
+                        'ReturnCode'        => $result['autorizacao']['codigo'],
+                        'ReturnMessage'     => $result['autorizacao']['mensagem']
+                    )
+                );
+
                 break;
             case '3':
                 $this->response = json_decode($response, true);
@@ -755,11 +791,13 @@ class CieloClient {
         $paymentCurrency =  $this->jsonData['Payment']['Currency'];
         $currency = isset($currencies[$paymentCurrency]) ? $currencies[$paymentCurrency] : 986;
 
+        $this->transactionId = md5(date("YmdHisu"));
+
         /**
          * Unfortunately, this is the simplest way to generate the request body
          */
         $xml = '<?xml version="1.0" encoding="ISO-8859-1"?>
-                <requisicao-transacao id="' . md5(date("YmdHisu")) . '" versao="1.2.1">
+                <requisicao-transacao id="' . $this->transactionId . '" versao="1.2.1">
                 <dados-ec>
                     <numero>' . ($this->sandbox ? $this->sandboxId  : $this->merchantId)  . '</numero>
                     <chave>'  . ($this->sandbox ? $this->sandboxKey : $this->merchantKey) . '</chave>
