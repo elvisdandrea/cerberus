@@ -15,7 +15,9 @@
  * @constructor
  */
 function GMaps() {}
-GMaps.maps = {};
+
+GMaps.maps    = {};
+GMaps.cluster = [];
 /**
  * GMaps Prototype
  *
@@ -60,7 +62,14 @@ GMaps.prototype = {
             center: latlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        GMaps.maps[elementId] = new google.maps.Map(document.getElementById(elementId), myOptions);
+
+        GMaps.maps = new google.maps.Map(document.getElementById(elementId), myOptions);
+//        if (GMaps.cluster.length > 0) {
+//            google.maps.event.addListenerOnce(GMaps.maps, 'idle', function() {
+//                alert('here');
+//                GMaps.mc = new MarkerClusterer(GMaps.maps, GMaps.cluster);
+//            });
+//        }
     },
 
     /**
@@ -71,15 +80,45 @@ GMaps.prototype = {
      * @param lng               - Longitude
      * @param contentString     - The HTML string
      * @param contentTitle      - The title
+     * @param events            - The marker events
      */
-    addMarker : function(elementId, lat, lng, contentString, contentTitle)
+    addMarker : function(elementId, lat, lng, contentString, contentTitle, events)
     {
+
+        var latlng = new google.maps.LatLng(lat, lng);
+        GMaps.marker = new google.maps.Marker({
+            position: latlng,
+            map: GMaps.maps,
+            title:contentTitle,
+            center: latlng,
+            draggable: true
+        });
+
+        if(contentString){
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+            google.maps.event.addListener(GMaps.marker, 'click', function() {
+                infowindow.open(GMaps.maps, GMaps.marker);
+            });
+        }
+
+        for (var i in events) {
+            google.maps.event.addListener(GMaps.marker, i, events[i]);
+        }
+
+    },
+
+    addClusteredMarker : function(elementId, lat, lng, contentString, contentTitle, events) {
+
+        if (GMaps.cluster == undefined) GMaps.cluster = [];
 
         var latlng = new google.maps.LatLng(lat, lng);
         var marker = new google.maps.Marker({
             position: latlng,
-            map: GMaps.maps[elementId],
-            title:contentTitle
+            title:contentTitle,
+            center: latlng,
+            draggable: true
         });
 
         if(contentString){
@@ -87,11 +126,15 @@ GMaps.prototype = {
                 content: contentString
             });
             google.maps.event.addListener(marker, 'click', function() {
-                infowindow.open(GMaps.map,marker);
+                infowindow.open(GMaps.maps, marker);
             });
         }
 
+        for (var i in events) {
+            google.maps.event.addListener(marker, i, events[i]);
+        }
 
+        GMaps.cluster.push(marker);
     },
 
     /**
@@ -106,10 +149,15 @@ GMaps.prototype = {
         if (radius == undefined) radius = 800;
         var latlng = new google.maps.LatLng(lat, lng);
         var circle = new google.maps.Circle({
-            map: GMaps.maps[elementId],
+            map: GMaps.maps,
             radius: radius,
             center: latlng
         });
+    },
+
+    addEvent : function(event, func) {
+
+        GMaps.maps.event.addListener(GMaps.marker, event, func);
     }
 
 
