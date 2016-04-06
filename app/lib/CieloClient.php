@@ -23,13 +23,13 @@ class CieloClient {
      *           "checkoutUrl"   : "https://cieloecommerce.cielo.com.br/api/public/v1/orders"
      *       }
      */
-    const CNFG_FILE         = 'cielo.conf-3.json';
+    const CNFG_FILE         = 'conf/cielo.conf-3.json';
 
     /**
      * The json with the information for
      * accessing the Legacy 1.5 API
      */
-    const CNFG_FILE_LEGACY  = 'cielo.conf-1.5.json';
+    const CNFG_FILE_LEGACY  = 'conf/cielo.conf-1.5.json';
 
     /**
      * The Cielo Merchant ID
@@ -151,7 +151,7 @@ class CieloClient {
      * @var array
      */
     private $validBrandTypes    = array(
-        'Visa', 'Master', 'Amex', 'Elo', 'Auria', 'JCB', 'Diners', 'Discover'
+        'Visa', 'Master', 'MasterCard', 'Amex', 'Elo', 'Auria', 'JCB', 'Diners', 'Discover'
     );
 
     /**
@@ -708,6 +708,10 @@ class CieloClient {
         $response   = curl_exec($ch);
         $this->info = curl_getinfo($ch);
 
+        file_put_contents('../classes/logs/transfer.log', $response, FILE_APPEND);
+
+//        print_r($response); exit;
+
         $this->processResponse($response);
         if (!$this->response) $this->response = curl_error($ch);
 
@@ -752,6 +756,10 @@ class CieloClient {
                     )
                 );
 
+                if (isset($result['token'])) {
+                    $this->response['Payment']['RecurrentPayment']['RecurrentPaymentId'] = $result['token']['dados-token']['codigo-token'];
+                    $this->response['Payment']['CreditCard']['CardNumber'] = $result['token']['dados-token']['numero-cartao-truncado'];
+                }
                 break;
             case '3':
                 $this->response = json_decode($response, true);
@@ -779,7 +787,8 @@ class CieloClient {
             $product = 'A';
         }
 
-        $authorize = isset($this->jsonData['Payment']['RecurrentPayment']) ? '4' : '1';
+        $authorize     = '3';
+        $generateToken = isset($this->jsonData['Payment']['RecurrentPayment']) ? '<gerar-token>true</gerar-token>' : '';
 
         $cardValidDate = explode('/', $this->jsonData['Payment'][$cardType]['ExpirationDate']);
         $cardValidDate = $cardValidDate[1] . $cardValidDate[0];
@@ -823,6 +832,7 @@ class CieloClient {
                 <url-retorno>null</url-retorno>
                 <autorizar>' . $authorize . '</autorizar>
                 <capturar>false</capturar>
+                '. $generateToken .'
                 </requisicao-transacao>';
 
         return $xml;
