@@ -518,15 +518,7 @@ class Model {
      * @return array
      */
     private function Mount(PDOStatement $result) {
-        $obj = array();
-        $row = 0;
-        while ($res = $result->fetchObject()) {
-            foreach ($res as $field => $value) {
-                $obj[$row][$field] = utf8_encode($value);
-            }
-            $row++;
-        }
-        return $obj;
+        return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
