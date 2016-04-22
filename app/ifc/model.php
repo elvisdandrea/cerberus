@@ -498,13 +498,15 @@ class Model {
     /**
      * Creates the connection resource instance
      *
-     * @param $name     - The Connection Name
+     * @param   string  $name     - The Connection Name
+     * @param   string  $dsn      - The Connection DSN (Default = mysql)
+     * @param   string  $port     - The Connection Port
      */
-    private function connect($name) {
+    private function connect($name, $dsn = 'mysql', $port = '3306') {
 
         $this->connections[$name]['conn'] =
             new PDO(
-                'mysql:host=' . $this->connections[$name]['host'] . ';dbname=' . $this->connections[$name]['db'] . ';charset=utf8',
+                $dsn . ':host=' . $this->connections[$name]['host'] . ';port=' . $port . ';dbname=' . $this->connections[$name]['db'] . ';charset=utf8',
                 $this->connections[$name]['user'],
                 $this->connections[$name]['pass']);
     }
