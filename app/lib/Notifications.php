@@ -152,7 +152,11 @@ class Notifications {
      */
     private function setPushDataAndroid($message, array $customInfo = array()) {
 
-        $data = array();
+        $data = array(
+            'cmd'   => 'Notification',
+            'alert' => 'Nova Mensagem',
+            'sound' => 'default'
+        );
 
         !$message ||
         $data['message'] = $message;
@@ -256,8 +260,8 @@ class Notifications {
             count($this->pushData['android']) == 0) return;
 
         $body = array(
-            'registration_ids'  => $this->pushList['android'],
-            'data'              => $this->pushData['android']
+            'registration_ids'   => $this->pushList['android'],
+            'data'  => $this->pushData['android']
         );
 
         $http = HttpHandler::Create($config['url'], 'post');
