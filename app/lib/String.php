@@ -54,11 +54,11 @@ class String {
      * and a concatenation character
      *
      * @param   string    $string           - The original string
-     * @param   string    $concat_char      - The concatenation character
      * @return  string                      - The converted string
      */
-    public static function BuildStringNewLines( $string, $concat_char = '+' ) {
-        return preg_replace( '/' . PHP_EOL . '+/', '\'' . PHP_EOL . $concat_char .'"\\' . PHP_EOL .'"' . $concat_char . '\'', trim( $string ));
+    public static function BuildStringNewLines( $string ) {
+        $result = preg_replace( '/' . PHP_EOL . '|' . chr(13) . '+/', '\\' . PHP_EOL, trim( $string ));
+        return $result;
     }
 
     /**
